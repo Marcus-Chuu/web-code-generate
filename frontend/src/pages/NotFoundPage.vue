@@ -1,0 +1,2 @@
+<template><main class="not-found"><div><span>404</span><h1>这个页面还没有被编织出来</h1><p>地址可能已改变，回到首页继续创作吧。</p><RouterLink to="/"><a-button type="primary" size="large">返回首页</a-button></RouterLink></div></main></template>
+<style scoped>.not-found{min-height:70vh;display:grid;place-items:center;text-align:center}.not-found span{color:#6558f5;font-size:88px;font-weight:900;letter-spacing:-.08em}.not-found h1{margin:0;font-size:30px}.not-found p{margin:14px 0 26px;color:#777f8f}</style>

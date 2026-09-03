@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>STEPLIFE · 运动鞋履</title>
+    <style>
+        /* ---------- 全局重置 & 变量 ---------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --orange: #FF5A1E;
+            --deep-blue: #112B4F;
+            --bright-blue: #2E6CFF;
+            --off-white: #F9F7F2;
+            --text-dark: #101820;
+            --text-light: #FFFFFF;
+            --shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.15);
+            --radius: 24px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--off-white);
+            color: var(--text-dark);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        ul {
+            list-style: none;
+        }
+        .container {
+            width: min(1200px, 92%);
+            margin-inline: auto;
+        }
+
+        /* ---------- 动感背景辅助线 ---------- */
+        .bg-energetic {
+            background-color: var(--off-white);
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(255, 90, 30, 0.03) 0%, transparent 25%),
+                radial-gradient(circle at 90% 70%, rgba(46, 108, 255, 0.04) 0%, transparent 30%);
+        }
+
+        /* ---------- 按钮 & 通用组件 ---------- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: var(--orange);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 1rem;
+            border: 2px solid transparent;
+            transition: var(--transition);
+            box-shadow: 0 8px 16px -6px rgba(255, 90, 30, 0.3);
+            cursor: pointer;
+            letter-spacing: 0.3px;
+        }
+        .btn:hover {
+            background: transparent;
+            border-color: var(--orange);
+            color: var(--orange);
+            transform: translateY(-3px);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--deep-blue);
+            color: var(--deep-blue);
+            box-shadow: none;
+        }
+        .btn-outline:hover {
+            background: var(--deep-blue);
+            color: white;
+            border-color: var(--deep-blue);
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+        }
+        .title-accent {
+            color: var(--orange);
+            position: relative;
+            display: inline-block;
+        }
+        .section-sub {
+            font-size: 1.1rem;
+            opacity: 0.7;
+            max-width: 600px;
+        }
+
+        /* ---------- 头部导航 ---------- */
+        .navbar {
+            background: rgba(17, 43, 79, 0.95);
+            backdrop-filter: blur(8px);
+            padding: 14px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 8px 20px -12px rgba(0,0,0,0.5);
+        }
+        .nav-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+        .logo img {
+            width: 44px;
+            height: 44px;
+            background: white;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--orange);
+        }
+        .logo span {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: white;
+        }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.85);
+        }
+        .nav-links a {
+            transition: var(--transition);
+            padding: 4px 0;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-links a:hover {
+            border-color: var(--orange);
+            color: white;
+        }
+        .menu-icon {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: 0;
+            cursor: pointer;
+        }
+        .menu-icon span {
+            width: 28px;
+            height: 3px;
+            background: white;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+
+        /* ---------- HERO 大横幅 ---------- */
+        .hero {
+            background: linear-gradient(145deg, #FFFFFF 0%, #F0EDE6 100%);
+            padding: 3rem 0 5rem;
+            overflow: hidden;
+        }
+        .hero-inner {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+        .hero-copy {
+            flex: 1 1 360px;
+        }
+        .hero-copy h1 {
+            font-size: clamp(3.2rem, 8vw, 6rem);
+            font-weight: 800;
+            line-height: 0.9;
+            color: var(--deep-blue);
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+        .hero-copy .highlight {
+            color: var(--orange);
+        }
+        .hero-img {
+            flex: 1 1 300px;
+            background: var(--deep-blue);
+            border-radius: 40px;
+            padding: 12px;
+            transform: rotate(2deg);
+            box-shadow: var(--shadow);
+        }
+        .hero-img img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 30px;
+        }
+        .badge-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .stat-item {
+            display: inline-block;
+            background: white;
+            padding: 6px 16px;
+            border-radius: 100px;
+            font-weight: 600;
+            border: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 4px 8px -6px rgba(0,0,0,0.1);
+        }
+
+        /* ---------- 品牌标语栏 (生命力横幅) ---------- */
+        .energy-strip {
+            background: var(--deep-blue);
+            color: white;
+            padding: 1.8rem 0;
+            margin: 0;
+        }
+        .energy-strip p {
+            font-size: 1.3rem;
+            font-weight: 300;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .energy-strip span {
+            background: var(--orange);
+            padding: 2px 14px;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+
+        /* ---------- 商品卡片区 ---------- */
+        .featured-section {
+            padding: 5rem 0;
+        }
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 28px;
+            margin-top: 48px;
+        }
+        .product-card {
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 12px 28px -10px rgba(0, 0, 0, 0.08);
+            transition: var(--transition);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(17, 43, 79, 0.04);
+        }
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 40px -12px rgba(17, 43, 79, 0.2);
+        }
+        .product-img {
+            width: 100%;
+            height: 210px;
+            object-fit: cover;
+            background-color: #E4E0DA;
+        }
+        .card-info {
+            padding: 20px 16px 22px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        .product-tag {
+            color: var(--orange);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+        .product-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 6px 0 4px;
+        }
+        .product-price {
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: var(--deep-blue);
+            margin-top: 10px;
+        }
+        .price-unit {
+            font-size: 0.8rem;
+            font-weight: 400;
+            margin-left: 2px;
+        }
+        .add-cart {
+            margin-top: 16px;
+            background: white;
+            border: 2px solid var(--deep-blue);
+            color: var(--deep-blue);
+            padding: 8px 14px;
+            border-radius: 50px;
+            text-align: center;
+            font-weight: 600;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .add-cart:hover {
+            background: var(--deep-blue);
+            color: white;
+        }
+
+        /* ---------- 活力叙事区(挂图) ---------- */
+        .story-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            background: white;
+            padding: 4rem 0;
+        }
+        .story-media {
+            flex: 1 1 300px;
+            position: relative;
+            min-height: 300px;
+        }
+        .story-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 32px;
+            box-shadow: var(--shadow);
+            transition: 0.2s ease;
+        }
+        .story-content {
+            flex: 1 1 280px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 10px;
+        }
+        .quote-highlight {
+            background: var(--orange);
+            color: white;
+            padding: 4px 12px;
+            width: fit-content;
+            border-radius: 60px;
+            font-weight: bold;
+            margin-bottom: 24px;
+        }
+        .image-cluster {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 24px;
+        }
+        .image-cluster img {
+            height: 120px;
+            width: 100%;
+            border-radius: 16px;
+            object-fit: cover;
+        }
+
+        /* ---------- 尾部 CTA ---------- */
+        .cta-footer {
+            background: linear-gradient(135deg, #112B4F, #0F1F36);
+            padding: 3rem 0;
+            color: white;
+        }
+        .cta-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        .cta-text h2 {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+        .social-icons {
+            display: flex;
+            gap: 18px;
+        }
+        .social-icons a {
+            background: rgba(255,255,255,0.08);
+            padding: 10px 14px;
+            border-radius: 30px;
+            backdrop-filter: blur(2px);
+        }
+
+        /* ---------- 移动端适配 ---------- */
+        @media screen and (max-width: 720px) {
+            .nav-links {
+                display: none;
+            }
+            .menu-icon {
+                display: flex;
+            }
+            .nav-wrap {
+                flex-wrap: wrap;
+            }
+            .hero-inner {
+                flex-direction: column-reverse;
+                align-items: start;
+            }
+            .hero-img img {
+                height: 260px;
+            }
+            .card-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+            .image-cluster {
+                grid-template-columns: 1fr;
+            }
+            .badge-group {
+                flex-direction: column;
+            }
+        }
+        @media screen and (max-width: 480px) {
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            .product-card {
+                max-width: 350px;
+                margin-inline: auto;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航 -->
+    <nav class="navbar">
+        <div class="container nav-wrap">
+            <div class="logo">
+                <!-- LOGO 素材 -->
+                <img src="https://dashscope-5859.oss-cn-wulanchabu-acdr-1.aliyuncs.com/1d/7c/20260902/6514ac22/dc9e2880-c718-4b4d-86ec-8590d58814ab4120479263.png?Expires=1788445424&OSSAccessKeyId=LTAI5tPxpiCM2hjmWrFXrym1&Signature=yJfHHncuSo%2BWmO8NFjE%2B5wVYwnQ%3D" alt="品牌logo 闪电">
+                <span>VOLT</span>
+            </div>
+            <div class="nav-links">
+                <a href="#">新品</a>
+                <a href="#">男鞋</a>
+                <a href="#">女鞋</a>
+                <a href="#">运动</a>
+                <a href="#">故事</a>
+            </div>
+            <button class="menu-icon" aria-label="菜单">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- HERO 活力头版 + 商品卡片 与实景融合 -->
+    <section class="hero bg-energetic">
+        <div class="container hero-inner">
+            <div class="hero-copy">
+                <h1>RUN <span class="highlight">WITH</span> POWER</h1>
+                <p style="font-size: 1.2rem; margin-top: -8px; max-width: 500px;">每一步都注入生命力。街头、球场、城市峡谷 —— 全新动能中底。</p>
+                <div class="badge-group">
+                    <span class="stat-item">⚡ 全掌气垫</span>
+                    <span class="stat-item">🔥 超轻织物</span>
+                </div>
+                <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px;">
+                    <a href="#" class="btn">立即选购</a>
+                    <a href="#" class="btn btn-outline" style="background: white; border-color: white;">探索系列</a>
+                </div>
+            </div>
+            <div class="hero-img">
+                <!-- 跳跃动作 活力 -->
+                <img src="https://images.pexels.com/photos/8283582/pexels-photo-8283582.jpeg?auto=compress&cs=tinysrgb&h=350" alt="跳跃中的动感运动鞋">
+            </div>
+        </div>
+    </section>
+
+    <!-- 能量赛跑标语 -->
+    <div class="energy-strip">
+        <div class="container">
+            <p> #UNSTOPPABLE <span>20% OFF</span> 引爆你的秋天</p>
+        </div>
+    </div>
+
+    <!-- 商品卡片特别展示 -->
+    <section class="featured-section container">
+        <div style="display: flex; justify-content: space-between; align-items: end; flex-wrap: wrap;">
+            <div>
+                <h2 class="section-title">新到 <span class="title-accent">动力</span> 系列</h2>
+                <p class="section-sub">轻盈 · 抓地 · 包裹</p>
+            </div>
+        </div>
+        <div class="card-grid">
+            <!-- 卡片1 猎鹰配色 -->
+            <div class="product-card">
+                <img class="product-img" src="https://images.pexels.com/photos/2310905/pexels-photo-2310905.jpeg?auto=compress&cs=tinysrgb&h=350" alt="灰色木轨鞋">
+                <div class="card-info">
+                    <span class="product-tag">LIMITED</span>
+                    <div class="product-title">Falcon Glide</div>
+                    <div style="color:#555;">猎鹰系列</div>
+                    <div class="product-price">$129 <span class="price-unit">USD</span></div>
+                    <button class="add-cart">加入购物袋 →</button>
+                </div>
+            </div>
+            <!-- 卡片2 红色兜风 -->
+            <div class="product-card">
+                <img class="product-img" src="https://images.pexels.com/photos/18910019/pexels-photo-18910019.jpeg?auto=compress&cs=tinysrgb&h=350" alt="伸出车窗的鞋">
+                <div class="card-info">
+                    <span class="product-tag">NEW</span>
+                    <div class="product-title">Roadster Frees</div>
+                    <div style="color:#555;">自由精神</div>
+                    <div class="product-price">$149 <span class="price-unit">USD</span></div>
+                    <button class="add-cart">加入购物袋 →</button>
+                </div>
+            </div>
+            <!-- 卡片3 篮球飞人 黑色幽默 -->
+            <div class="product-card">
+                <img class="product-img" src="https://images.pexels.com/photos/1522381/pexels-photo-1522381.jpeg?auto=compress&cs=tinysrgb&h=350" alt="户外运球特写">
+                <div class="card-info">
+                    <span class="product-tag">HOT</span>
+                    <div class="product-title">Court Shadow</div>
+                    <div style="color:#555;">街头运球</div>
+                    <div class="product-price">$119 <span class="price-unit">USD</span></div>
+                    <button class="add-cart">加入购物袋 →</button>
+                </div>
+            </div>
+            <!-- 卡片4 灰色鞋特写 -->
+            <div class="product-card">
+                <img class="product-img" src="https://images.pexels.com/photos/6388390/pexels-photo-6388390.jpeg?auto=compress&cs=tinysrgb&h=350" alt="健身房黑白鞋">
+                <div class="card-info">
+                    <span class="product-tag">GRAY</span>
+                    <div class="product-title">Gym Strides</div>
+                    <div style="color:#555;">训练专用</div>
+                    <div class="product-price">$99 <span class="price-unit">USD</span></div>
+                    <button class="add-cart">加入购物袋 →</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 品牌生命力叙事  融入素材 -->
+    <div class="story-grid container" style="border-radius: 30px; padding-left: 2rem; padding-right: 2rem;">
+        <div class="story-media">
+            <!-- 群像动感 老年人毽球 (生命力) -->
+            <img src="https://images.pexels.com/photos/36681500/pexels-photo-36681500.jpeg?auto=compress&cs=tinysrgb&h=350" alt="活力老年人户外毽球">
+        </div>
+        <div class="story-content">
+            <span class="quote-highlight"> 生命力IN MOTION </span>
+            <h2 style="font-size: 2.4rem; font-weight: 700;">从晨曦到霓虹，城市即跑道</h2>
+            <p style="margin: 20px 0; font-size: 1.05rem; opacity: 0.8;">无论是公园角落的毽球，还是夜晚的街头篮球 —— 每双鞋都见证你的脉搏。</p>
+            <div class="image-cluster">
+                <img src="https://images.pexels.com/photos/16382751/pexels-photo-16382751.jpeg?auto=compress&cs=tinysrgb&h=350" alt="城市水渍跑步">
+                <img src="https://images.pexels.com/photos/36542095/pexels-photo-36542095.jpeg?auto=compress&cs=tinysrgb&h=350" alt="猎鹰动态飞行">
+            </div>
+        </div>
+    </div>
+
+    <!-- 三张并排风格卡片 / 第二组商品 -->
+    <div style="padding: 4rem 0; background-color: #fff;">
+        <div class="container">
+            <h2 class="section-title" style="font-size: 2rem;">经典 · 街头制霸</h2>
+            <div class="card-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 25px;">
+                <!-- 从素材挑三双鞋展示 -->
+                <div class="product-card">
+                    <img class="product-img" src="https://images.pexels.com/photos/1456706/pexels-photo-1456706.jpeg?auto=compress&cs=tinysrgb&h=350" alt="彩色鞋顶视角">
+                    <div class="card-info">
+                        <div class="product-title">Urban Top</div>
+                        <div class="product-price">$89</div>
+                        <button class="add-cart">速抢</button>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <img class="product-img" src="https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg?auto=compress&cs=tinysrgb&h=350" alt="漂浮动感鞋子">
+                    <div class="card-info">
+                        <div class="product-title">Levit8</div>
+                        <div class="product-price">$139</div>
+                        <button class="add-cart">速抢</button>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <img class="product-img" src="https://images.pexels.com/photos/8979071/pexels-photo-8979071.jpeg?auto=compress&cs=tinysrgb&h=350" alt="橙色背景耐克风">
+                    <div class="card-info">
+                        <div class="product-title">Falcon Jay</div>
+                        <div class="product-price">$109</div>
+                        <button class="add-cart">速抢</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 深夜球赛/背景氛围 -->
+    <section style="background: #0c1a2b; padding: 4rem 0; color: white;">
+        <div class="container" style="display: flex; gap: 30px; flex-wrap: wrap; align-items: center;">
+            <div style="flex: 1 1 200px;">
+                <h2 style="font-size: 2.6rem;">夜斗 · HIGH SPIKE</h2>
+                <p style="margin: 16px 0;">黑白色调 能量不减</p>
+                <img src="https://images.pexels.com/photos/14262645/pexels-photo-14262645.jpeg?auto=compress&cs=tinysrgb&h=350" alt="黑白扣篮" style="width: 100%; max-height: 300px; object-fit: cover; border-radius: 30px;">
+            </div>
+            <div style="flex: 1 1 200px;">
+                <img src="https://images.pexels.com/photos/12725054/pexels-photo-12725054.jpeg?auto=compress&cs=tinysrgb&h=350" alt="红黑鞋戏剧光" style="width: 100%; border-radius: 24px;">
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 CTA -->
+    <footer class="cta-footer">
+        <div class="container cta-inner">
+            <div class="cta-text">
+                <h2>踏入疾风 · 野性发售</h2>
+                <p style="opacity:0.8;">邀码：SPRINT 额外减¥30</p>
+            </div>
+            <div class="social-icons">
+                <a href="#">▲ 运动</a>
+                <a href="#">◆ 社群</a>
+                <a href="#">● 抖音</a>
+            </div>
+        </div>
+        <div style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 2rem; text-align: center; padding-top: 1.5rem; font-size: 0.85rem; opacity: 0.6;">© STEPLIFE, Move With Intensity</div>
+    </footer>
+
+    <!-- 原生 JS 简单交互：移动端菜单 / 加购提示 -->
+    <script>
+        (function() {
+            // 移动菜单简易切换（展示交互，无动态样式代替）
+            const menuBtn = document.querySelector('.menu-icon');
+            const navWrap = document.querySelector('.nav-wrap');
+            if (menuBtn) {
+                menuBtn.addEventListener('click', function() {
+                    // 切换图片式简易隐藏
+                    const navLinks = document.querySelector('.nav-links');
+                    if (navLinks) {
+                        if (navLinks.style.display === 'flex') {
+                            navLinks.style.display = 'none';
+                        } else {
+                            // 简易响应式内联
+                            navLinks.style.display = 'flex';
+                            navLinks.style.flexDirection = 'column';
+                            navLinks.style.width = '100%';
+                            navLinks.style.alignItems = 'center';
+                            navLinks.style.padding = '15px 0 2px';
+                        }
+                    }
+                });
+            }
+
+            // 商品卡片按钮 “加入购物袋” 反馈
+            const buttons = document.querySelectorAll('.add-cart');
+            buttons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    this.textContent = '✓ 已加购';
+                    this.style.background = '#112B4F';
+                    this.style.color = 'white';
+                    this.style.borderColor = '#112B4F';
+                    setTimeout(() => {
+                        this.textContent = '加入购物袋 →';
+                        this.style.background = 'white';
+                        this.style.color = '#112B4F';
+                    }, 1200);
+                });
+            });
+
+            // 优雅折叠
+            const links = document.querySelectorAll('.nav-links a');
+            links.forEach(l => l.addEventListener('click', () => {
+                const navLinks = document.querySelector('.nav-links');
+                if(navLinks && window.innerWidth < 720) {
+                    navLinks.style.display = 'none';
+                }
+            }));
+        })();
+    </script>
+
+    <!-- （根据素材补充）利用更多素材点缀不干扰 -->
+    <!-- 整体包含生命感多图，但保持性能 -->
+</body>
+</html>

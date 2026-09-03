@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>极简 · 作品集 | 项目经历</title>
+  <style>
+    /* ----- 全局重置 & 极简基调 ----- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #faf9f8;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: #1e1e1e;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      padding: 2rem 1.2rem 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      letter-spacing: 0.01em;
+    }
+
+    /* 极简标题体系，去除多余装饰 */
+    h1, h2, h3 {
+      font-weight: 400;
+      letter-spacing: -0.01em;
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 7vw, 3.2rem);
+      margin-bottom: 0.5rem;
+      font-weight: 300;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      font-weight: 350;
+      border-bottom: 1px solid #d0cfcc;
+      padding-bottom: 0.6rem;
+      margin: 3.2rem 0 2rem;
+      letter-spacing: 0.02em;
+    }
+
+    h3 {
+      font-size: 1.1rem;
+      font-weight: 450;
+      margin-bottom: 0.75rem;
+    }
+
+    a {
+      color: #2c2c2c;
+      text-decoration: none;
+      border-bottom: 1px solid #b0afac;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    a:hover {
+      border-bottom-color: #171717;
+      color: #000;
+    }
+
+    .container {
+      margin: 0 auto;
+    }
+
+    /* ---------- 头部：极简·项目经历为主 ---------- */
+    .header-minimal {
+      margin: 1rem 0 3rem;
+    }
+
+    .header-sub {
+      font-size: 1rem;
+      color: #5a5956;
+      max-width: 600px;
+      margin-top: 0.5rem;
+      font-weight: 300;
+      border-left: 2px solid #c7c5c1;
+      padding-left: 1.2rem;
+    }
+
+    /* ---------- 重磅区：项目经历 (极简卡片/条目) ---------- */
+    .project-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 2.2rem;
+      margin-top: 1.2rem;
+    }
+
+    .project-item {
+      display: flex;
+      flex-direction: column;
+      border-bottom: 1px solid #e0dfdc;
+      padding-bottom: 1.8rem;
+    }
+
+    .project-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.5rem 1rem;
+    }
+
+    .project-title {
+      font-size: 1.25rem;
+      font-weight: 400;
+      letter-spacing: 0.01em;
+    }
+
+    .project-year {
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: #6b6a67;
+      background: #efeeec;
+      padding: 0.15rem 0.8rem;
+      border-radius: 30px;
+    }
+
+    .project-desc {
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+      color: #2e2d2b;
+      max-width: 720px;
+      font-weight: 350;
+    }
+
+    .project-stack {
+      margin-top: 0.4rem;
+      font-size: 0.85rem;
+      color: #6e6a66;
+      font-weight: 300;
+      letter-spacing: 0.02em;
+    }
+
+    .project-stack span {
+      background: #f1f0ee;
+      padding: 0.2rem 0.7rem;
+      border-radius: 20px;
+      display: inline-block;
+      margin-right: 0.4rem;
+      margin-top: 0.3rem;
+    }
+
+    /* 极简占位图 (如果用户没有图片，永远不破坏氛围) */
+    .placeholder-img {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .placeholder-img img {
+      max-width: 180px;
+      width: 100%;
+      height: auto;
+      opacity: 0.9;
+      border-radius: 4px;
+      border: 1px solid #e6e4e1;
+      background: #eceae7;
+    }
+
+    /* ---------- 次要经历 (紧凑列表) ---------- */
+    .side-projects {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 2rem 1.5rem;
+      margin: 1.2rem 0 0.5rem;
+    }
+
+    .side-card {
+      border: 1px solid #e2dfdb;
+      padding: 1.5rem 1.3rem 1.7rem;
+      background: #ffffff;
+      border-radius: 2px;
+      transition: box-shadow 0.25s ease;
+    }
+
+    .side-card:hover {
+      box-shadow: 0 2px 12px rgba(0,0,0,0.02), 0 0px 0 1px #d8d5d1;
+    }
+
+    .side-card h3 {
+      font-weight: 480;
+      font-size: 1.1rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .side-card .role {
+      font-size: 0.8rem;
+      color: #7a7875;
+      margin-bottom: 0.6rem;
+      border-bottom: 1px solid #edece9;
+      padding-bottom: 0.5rem;
+      font-weight: 300;
+    }
+
+    .side-card p {
+      font-size: 0.9rem;
+      color: #3a3937;
+      font-weight: 350;
+    }
+
+    .side-card .stack-sm {
+      margin-top: 0.8rem;
+      font-size: 0.75rem;
+      color: #726f6c;
+    }
+
+    /* ---------- 工具 / 关于 ---------- */
+    .about-text {
+      font-size: 0.97rem;
+      color: #2b2a28;
+      max-width: 700px;
+      font-weight: 320;
+      margin-bottom: 1.2rem;
+    }
+
+    .contact-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.8rem;
+      margin-top: 1.8rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid #dad8d4;
+      font-size: 0.9rem;
+    }
+
+    .contact-meta span {
+      letter-spacing: 0.02em;
+    }
+
+    /* 极简 footer */
+    .footer-note {
+      margin-top: 4rem;
+      padding-top: 1.5rem;
+      text-align: right;
+      border-top: 1px solid #e1dfdc;
+      color: #7c7975;
+      font-size: 0.8rem;
+      font-weight: 300;
+    }
+
+    /* ----- 移动端适配 (极简) ----- */
+    @media (max-width: 600px) {
+      body {
+        padding: 1.2rem 0.8rem 3rem;
+      }
+      h2 {
+        margin-top: 2.2rem;
+      }
+      .contact-meta {
+        gap: 0.8rem 1.2rem;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .project-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+      }
+      .project-year {
+        align-self: flex-start;
+      }
+      .placeholder-img img {
+        max-width: 100%;
+      }
+    }
+
+    /* 纯原生/极简交互用 JS —— 不引入任何框架 */
+    .small-tip {
+      font-size: 0.8rem;
+      color: #82807c;
+      margin-left: 0.8rem;
+      cursor: default;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    
+    <!-- 头部：突出个人 + 直接聚焦经历 -->
+    <header class="header-minimal">
+      <h1>周 维 · Zhōu Wéi</h1>
+      <div class="header-sub">
+        作品收录 2020–2025 · 前端 / 交互 / 视觉 —— 重視過程與細節。
+      </div>
+    </header>
+
+    <!-- ▼▼ 主要項目經歷 (極簡流線) 最重點顯示 ▼▼ -->
+    <section>
+      <h2>👨‍💻 主項目經歷</h2>
+      <div class="project-grid" id="featured-projects">
+        <!-- 项目1 -->
+        <article class="project-item">
+          <div class="project-header">
+            <span class="project-title">邊界 · 設計系統</span>
+            <span class="project-year">2024 – 至今</span>
+          </div>
+          <p class="project-desc">
+            為跨國團隊建立無障礙設計規範，組件庫覆蓋 30+ 核心元素，並撰寫實用文檔。推動 web 性能與可訪問性標準，減少 38% UI 重工。
+          </p>
+          <div class="project-stack">
+            <span>React</span><span>TypeScript</span><span>Figma API</span><span>Storybook</span>
+          </div>
+          <!-- 极简占位图，说明项目影像 -->
+          <div class="placeholder-img">
+            <img src="https://picsum.photos/400/220?random=1" alt="设计系统示意封面">
+          </div>
+        </article>
+
+        <!-- 项目2 —— 重新设计 -->
+        <article class="project-item">
+          <div class="project-header">
+            <span class="project-title">氣象可視化平台</span>
+            <span class="project-year">2023 – 2024</span>
+          </div>
+          <p class="project-desc">
+            為主機最多、資料流複雜的氣象部門打造即時圖表。透過 WebGL 與 Canvas 混用，讓雷達資料加載速度提升 60%，並強化真實性分析。
+          </p>
+          <div class="project-stack">
+            <span>D3.js</span><span>WebGL</span><span>Mapbox</span>
+          </div>
+          <div class="placeholder-img">
+            <img src="https://picsum.photos/400/220?random=2" alt="数据可视化界面预演">
+          </div>
+        </article>
+
+        <!-- 项目3 -->
+        <article class="project-item">
+          <div class="project-header">
+            <span class="project-title">開源任務管理 · Peregrine</span>
+            <span class="project-year">2022 – 2023</span>
+          </div>
+          <p class="project-desc">
+            高可自訂的任務看板，鍵盤操作與 markdown 快捷編輯。社群 1.2k star，每月活躍下載超過 9k。專注極簡體驗。
+          </p>
+          <div class="project-stack">
+            <span>Vue 3</span><span>Pinia</span><span>Tailwind (概念)</span><span>IndexedDB</span>
+          </div>
+          <div class="placeholder-img">
+            <img src="https://picsum.photos/400/220?random=3" alt="任务管理工具屏幕">
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ▼ 其它項目經歷 / 側邊精選 -->
+    <section>
+      <h2>📁 更多項目與實驗</h2>
+      <div class="side-projects" id="side-projects">
+        <!-- 小型侧面项目卡片 -->
+        <div class="side-card">
+          <h3>音流・陪伴白噪音</h3>
+          <div class="role">概念開發 / 個人項目</div>
+          <p>在瀏覽器內即時合成環境音，使用 Web Audio API，支援離線 PWA。</p>
+          <div class="stack-sm">JavaScript · 音訊處理</div>
+        </div>
+        <div class="side-card">
+          <h3>文字排版實驗室</h3>
+          <div class="role">實驗 · 前端研究</div>
+          <p>探索中英混排的微觀排版，以及字體可讀性量化；參數驅動 CSS 產生版式。</p>
+          <div class="stack-sm">CSS · 字體光學</div>
+        </div>
+        <div class="side-card">
+          <h3>極簡幾何生成器</h3>
+          <div class="role">ACM / 視覺程式</div>
+          <p>生成 SVG 幾何圖形，輸出紋理與海報。支援亂數種子與導出PNG。</p>
+          <div class="stack-sm">SVG · Canvas</div>
+        </div>
+        <div class="side-card">
+          <h3>簡報腳本輔助</h3>
+          <div class="role">黑客松作品</div>
+          <p>講者即時提詞與時間偵測；使用語音轉文字標註重點，奪得最佳工具獎。</p>
+          <div class="stack-sm">MediaRecorder</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 簡短關於 / 經歷摘要（強化“項目經歷”主題） -->
+    <section>
+      <h2>🔍 經歷摘要</h2>
+      <p class="about-text">
+        五年專注在產品級前端架構與設計實作。從小型新創到大型團隊，擅長把模糊需求轉為直覺介面。
+        以下經驗來自與哈佛醫學院合作案、Mozilla 開放社群以及本土新創。底層信念：設計是溝通的框架，代碼是框架的載體。
+      </p>
+
+      <!-- 紧凑经历列表 (无照片，文字极简) -->
+      <div style="display: flex; flex-wrap: wrap; gap: 1rem 2rem; margin-top: 0.8rem;">
+        <span style="font-weight: 350; font-size: 0.95rem;">🔹 資深前端 · 新芽設計 (2021-2022)</span>
+        <span style="font-weight: 350; font-size: 0.95rem;">🔹 合約開發 · 資料視覺 (2023)</span>
+        <span style="font-weight: 350; font-size: 0.95rem;">🔹 開源維護者 (2023-2025)</span>
+      </div>
+
+      <!-- 联系/代碼 (極簡) -->
+      <div class="contact-meta">
+        <span>✉️ hello@zwei.work</span>
+        <span>🌐 github.com/zwei-design</span>
+        <span>📍 台灣／台北</span>
+        <span id="dynamic-time" style="color:#6f6c68;">—</span>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      ● 每一項經歷都是長久打磨 — 作品集 2025
+    </div>
+
+  </div>
+
+  <!-- 原生 JS：極簡交互，顯示目前本地時間、以及項目卡片小巧互動 (沒有引入任何資源) -->
+  <script>
+    (function() {
+      // 極簡動態年份/目前時間 (更新 footer 旁)
+      const timeElement = document.getElementById('dynamic-time');
+      if (timeElement) {
+        const updateTime = () => {
+          const now = new Date();
+          const dateStr = now.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' });
+          const timeStr = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+          timeElement.textContent = `📅 ${dateStr} ${timeStr}`;
+        };
+        updateTime();
+        setInterval(updateTime, 30000); // 每30秒更新一次即可
+      }
+
+      // 加一些極簡卡片交互感：點擊主要項目時，顯示簡短額外說明(原生)
+      const projectItems = document.querySelectorAll('.project-item');
+      projectItems.forEach((item) => {
+        item.addEventListener('click', function(e) {
+          // 避免點到連結跳轉 (我們沒有href)
+          if (e.target.tagName === 'IMG' || e.target.tagName === 'A') return;
+          const titleElem = this.querySelector('.project-title');
+          if (!titleElem) return;
+          const say = titleElem.innerText.trim();
+          alert('查看「' + say + '」更多詳細說明 ? 可連絡信箱索取完整個案。');
+        });
+      });
+
+      // 側邊卡片hover沒有複雜行為，但加一個小工具 (僅打console或更新子標題) 
+      // 此處只做輔助說明；最低調
+      const sideCards = document.querySelectorAll('.side-card');
+      sideCards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+          // 極簡 : 增加一點透明度變化，透過style (但避免重繪太多只改變底色)
+          card.style.backgroundColor = '#fefefe';
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.backgroundColor = '#ffffff';
+        });
+      });
+    })();
+  </script>
+  <!-- 完美一個 HTML 檔，完全自包含，無任何外部資源除了picsum圖片 (按要求提供的佔位) 及字體皆為系統 -->
+</body>
+</html>
