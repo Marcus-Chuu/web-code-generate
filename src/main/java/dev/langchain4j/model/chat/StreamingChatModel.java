@@ -1,5 +1,7 @@
 package dev.langchain4j.model.chat;
 
+import com.marcuschu.webcodegenerate.monitor.MonitorContext;
+import com.marcuschu.webcodegenerate.monitor.MonitorContextHolder;
 import dev.langchain4j.agent.tool.ToolExecutionRequest;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.UserMessage;
@@ -42,34 +44,45 @@ public interface StreamingChatModel {
 
         List<ChatModelListener> listeners = listeners();
         Map<Object, Object> attributes = new ConcurrentHashMap<>();
+        MonitorContext monitorContext = MonitorContextHolder.capture();
 
         StreamingChatResponseHandler observingHandler = new StreamingChatResponseHandler() {
 
             @Override
             public void onPartialResponse(String partialResponse) {
-                handler.onPartialResponse(partialResponse);
+                try (MonitorContextHolder.Scope ignored = MonitorContextHolder.open(monitorContext)) {
+                    handler.onPartialResponse(partialResponse);
+                }
             }
 
             @Override
             public void onPartialToolExecutionRequest(int index, ToolExecutionRequest partialToolExecutionRequest) {
-                handler.onPartialToolExecutionRequest(index, partialToolExecutionRequest);
+                try (MonitorContextHolder.Scope ignored = MonitorContextHolder.open(monitorContext)) {
+                    handler.onPartialToolExecutionRequest(index, partialToolExecutionRequest);
+                }
             }
 
             @Override
             public void onCompleteToolExecutionRequest(int index, ToolExecutionRequest completeToolExecutionRequest) {
-                handler.onCompleteToolExecutionRequest(index, completeToolExecutionRequest);
+                try (MonitorContextHolder.Scope ignored = MonitorContextHolder.open(monitorContext)) {
+                    handler.onCompleteToolExecutionRequest(index, completeToolExecutionRequest);
+                }
             }
 
             @Override
             public void onCompleteResponse(ChatResponse completeResponse) {
-                onResponse(completeResponse, finalChatRequest, provider(), attributes, listeners);
-                handler.onCompleteResponse(completeResponse);
+                try (MonitorContextHolder.Scope ignored = MonitorContextHolder.open(monitorContext)) {
+                    onResponse(completeResponse, finalChatRequest, provider(), attributes, listeners);
+                    handler.onCompleteResponse(completeResponse);
+                }
             }
 
             @Override
             public void onError(Throwable error) {
-                ChatModelListenerUtils.onError(error, finalChatRequest, provider(), attributes, listeners);
-                handler.onError(error);
+                try (MonitorContextHolder.Scope ignored = MonitorContextHolder.open(monitorContext)) {
+                    ChatModelListenerUtils.onError(error, finalChatRequest, provider(), attributes, listeners);
+                    handler.onError(error);
+                }
             }
         };
 

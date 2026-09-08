@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>极简·作品集 | 项目经历</title>
+  <style>
+    /* 极简重置 + 设计变量 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    :root {
+      --bg: #fafaf9;
+      --surface: #ffffff;
+      --ink: #1c1917;
+      --muted: #737373;
+      --line: #e7e5e4;
+      --accent: #3f3f46;      /* 深灰，用于强调 */
+      --shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.08);
+      --radius: 2rem;
+    }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji";
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 5rem;
+    }
+    /* 区块间距 */
+    section {
+      margin-bottom: 5rem;
+    }
+    /* 极简标题区 */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .hero h1 {
+      font-size: clamp(3rem, 12vw, 6rem);
+      font-weight: 500;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      max-width: 12ch;
+    }
+    .hero p {
+      color: var(--muted);
+      max-width: 40ch;
+      font-size: 1.25rem;
+    }
+    /* 项目区域标题 */
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: 450;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      margin: 3rem 0 2rem;
+    }
+    .section-title small {
+      font-size: 1rem;
+      color: var(--muted);
+      font-weight: 400;
+    }
+    /* 项目网格 — 极简卡片 */
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2.5rem 1.8rem;
+      list-style: none;
+    }
+    .project-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(0, 0, 0, 0.02);
+      transition: 0.2s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .project-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.12);
+    }
+    .project-thumb {
+      aspect-ratio: 4 / 3;
+      width: 100%;
+      object-fit: cover;
+      background: #e2e0de;
+      display: block;
+    }
+    .project-body {
+      padding: 1.5rem 1.25rem 1.75rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .project-year {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.9rem;
+      font-weight: 500;
+    }
+    .project-card h3 {
+      font-size: 1.65rem;
+      font-weight: 500;
+      margin-bottom: 0.6rem;
+      letter-spacing: -0.02em;
+    }
+    .project-card p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.2rem;
+    }
+    .tech-tag {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: auto;
+    }
+    .tech-tag span {
+      background: #f0efee;
+      border-radius: 30px;
+      padding: 0.25rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: #44403c;
+    }
+    /* 简洁about / 简介 */
+    .bio-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3rem 6rem;
+      justify-content: space-between;
+      align-items: flex-start;
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 2.8rem 2rem;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+    .bio-text {
+      flex: 2 1 300px;
+    }
+    .bio-text h2 {
+      font-size: 2rem;
+      font-weight: 450;
+      margin-bottom: 0.5rem;
+    }
+    .bio-text p {
+      color: #57534e;
+      margin-top: 1rem;
+      max-width: 50ch;
+    }
+    .insight-img {
+      flex: 1 1 220px;
+      border-radius: 1.8rem;
+      overflow: hidden;
+    }
+    .insight-img img {
+      width: 100%;
+      height: 15rem;
+      object-fit: cover;
+      display: block;
+    }
+    /* 工具简介区 : 清晰图片/清晰度强调 */
+    .gallery-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1.2rem;
+      margin-bottom: 4rem;
+    }
+    .strip-item {
+      border-radius: 1.5rem;
+      overflow: hidden;
+      background: var(--surface);
+      box-shadow: 0 6px 15px -8px rgba(0,0,0,0.1);
+    }
+    .strip-item img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      display: block;
+      transition: 0.4s ease;
+    }
+    .strip-item:hover img {
+      scale: 1.02;
+    }
+    /* 更多图片展示（显示高清晰细节） */
+    .fine-details {
+      margin: 4rem 0 2rem;
+      border-top: 1px solid var(--line);
+      padding-top: 2rem;
+    }
+    /* 极简footer */
+    footer {
+      border-top: 1px solid var(--line);
+      padding-top: 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .small-link {
+      text-decoration: none;
+      color: inherit;
+      border-bottom: 1px solid currentColor;
+    }
+    @media (max-width: 600px) {
+      .container { padding: 1.2rem 1rem 4rem; }
+      .hero h1 { letter-spacing: -0.03em; }
+      .section-title { font-size: 2rem; }
+      .bio-section { padding: 1.8rem 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- 极简头部简介 -->
+  <header class="hero">
+    <h1>林·项目<br>研究所</h1>
+    <p>独立开发者 / 交互设计师 · 专注于视觉洁癖与功能平衡。以下为近期参与或发起的项目经历。</p>
+  </header>
+
+  <!-- 项目经历 — 主要展示区 (卡片风格突出经历) -->
+  <section>
+    <div class="section-title">
+      项目经历 <small>( 2023–2026 ) 精选</small>
+    </div>
+    <ul class="project-grid">
+      <!-- 项目1：使用清晰图片与细节 -->
+      <li class="project-card">
+        <img class="project-thumb" loading="lazy" src="https://images.pexels.com/photos/38988093/pexels-photo-38988093.jpeg?auto=compress&cs=tinysrgb&h=600" alt="城市光影人像项目">
+        <div class="project-body">
+          <div class="project-year">2025 · 视觉实验</div>
+          <h3>都市情绪 · 光影</h3>
+          <p>为独立杂志拍摄概念性人物项目，利用黄金时刻捕捉时装与城市感的对话，后期强调质感与皮肤细节。</p>
+          <div class="tech-tag"><span>art direction</span><span>editorial</span><span>soft proof</span></div>
+        </div>
+      </li>
+      <!-- 项目2 建筑/城市天际线，表达尺度 -->
+      <li class="project-card">
+        <img class="project-thumb" loading="lazy" src="https://images.pexels.com/photos/37800883/pexels-photo-37800883.jpeg?auto=compress&cs=tinysrgb&h=600" alt="宁波现代天际线">
+        <div class="project-body">
+          <div class="project-year">2024 · 城市研究</div>
+          <h3>浮光城岸</h3>
+          <p>长期影像项目，记录沿海城市扩张。聚焦高层建筑在自然光中的几何秩序。图片采集使用高分辨率设备，保留细节。</p>
+          <div class="tech-tag"><span>urban</span><span>architecture</span><span>drone</span></div>
+        </div>
+      </li>
+      <!-- 项目3 自然静谧 · 治愈系 -->
+      <li class="project-card">
+        <img class="project-thumb" loading="lazy" src="https://images.pexels.com/photos/37067666/pexels-photo-37067666.jpeg?auto=compress&cs=tinysrgb&h=600" alt="草地绿野自然项目">
+        <div class="project-body">
+          <div class="project-year">2023 · 环境叙事</div>
+          <h3>日光草甸</h3>
+          <p>与生态组织合作，通过自然肖像传递宁静价值观。整个系列强调光线与生机，后期保留每片叶脉清晰度。</p>
+          <div class="tech-tag"><span>nature</span><span>wellness</span><span>editorial</span></div>
+        </div>
+      </li>
+      <!-- 项目4 黑白人像 自我沉思记录 -->
+      <li class="project-card">
+        <img class="project-thumb" loading="lazy" src="https://images.pexels.com/photos/20845986/pexels-photo-20845986.jpeg?auto=compress&cs=tinysrgb&h=600" alt="黑白人像项目">
+        <div class="project-body">
+          <div class="project-year">2025 · 黑白符号</div>
+          <h3>镜面研究</h3>
+          <p>极简主义黑白肖像集，探索轮廓和情绪。高细节皮肤渲染与深黑背景，突出张力，项目用于画廊目录。</p>
+          <div class="tech-tag"><span>monochrome</span><span>portrait</span><span>fineart</span></div>
+        </div>
+      </li>
+      <!-- 项目5 城市高层仰望 B/W -->
+      <li class="project-card">
+        <img class="project-thumb" loading="lazy" src="https://images.pexels.com/photos/32606939/pexels-photo-32606939.jpeg?auto=compress&cs=tinysrgb&h=600" alt="黑白摩天楼">
+        <div class="project-body">
+          <div class="project-year">2024 · 城市尺度</div>
+          <h3>向上生长</h3>
+          <p>低角度拍摄摩天楼与压迫感天空，强调线条抽象性。为建筑师提供视觉参考，图集细节丰富。</p>
+          <div class="tech-tag"><span>skyscraper</span><span>bw</span><span>geometry</span></div>
+        </div>
+      </li>
+      <!-- 项目6 自然光叶脉 -->
+      <li class="project-card">
+        <img class="project-thumb" loading="lazy" src="https://images.pexels.com/photos/14973985/pexels-photo-14973985.jpeg?auto=compress&cs=tinysrgb&h=600" alt="林叶光影">
+        <div class="project-body">
+          <div class="project-year">2023 · 植物学合作</div>
+          <h3>叶脉透影</h3>
+          <p>喀拉拉邦森林深景，阳光透过树叶制造高对比图案。作品被选为环境记录单元封面。</p>
+          <div class="tech-tag"><span>botany</span><span>lighting</span><span>macro</span></div>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- 第二个重点：更多清晰的展示 (增强图片丰富度，呼应“更清晰”)  -->
+  <div class="fine-details">
+    <div class="section-title" style="margin-top:0;">
+      高清细节 · 近期添加 <small>原图直出</small>
+    </div>
+    <div class="gallery-strip">
+      <div class="strip-item"><img loading="lazy" src="https://images.pexels.com/photos/1321290/pexels-photo-1321290.jpeg?auto=compress&cs=tinysrgb&h=500" alt="椅子光影细节"></div>
+      <div class="strip-item"><img loading="lazy" src="https://images.pexels.com/photos/12657893/pexels-photo-12657893.jpeg?auto=compress&cs=tinysrgb&h=500" alt="巴库建筑"></div>
+      <div class="strip-item"><img loading="lazy" src="https://images.pexels.com/photos/35620792/pexels-photo-35620792.jpeg?auto=compress&cs=tinysrgb&h=500" alt="阳光绿植"></div>
+      <div class="strip-item"><img loading="lazy" src="https://images.pexels.com/photos/15877409/pexels-photo-15877409.jpeg?auto=compress&cs=tinysrgb&h=500" alt="班加罗尔云隙光"></div>
+      <div class="strip-item"><img loading="lazy" src="https://images.pexels.com/photos/34482960/pexels-photo-34482960.png?auto=compress&cs=tinysrgb&h=500" alt="黑白摩天楼仰视"></div>
+    </div>
+  </div>
+
+  <!-- 个人简叙 + 一张能够体现清晰度的高质量肖像 -->
+  <section class="bio-section">
+    <div class="bio-text">
+      <h2>以干净画面，承载项目故事。</h2>
+      <p>我是Mia Chen，一位倾向用自然光记录的设计师。长久关注居住和情感，作品见于独立出版物。相信“少但更精准”，追求每一个像素可读性，将项目过程中所有静谧和结构展现。</p>
+      <p style="margin-top:1rem;">近年专注城市及人物之间的情绪。所有图像均以RAW编辑输出，保留最大细节。个人项目亦多次参展。</p>
+    </div>
+    <div class="insight-img">
+      <img loading="lazy" src="https://images.pexels.com/photos/29376610/pexels-photo-29376610.jpeg?auto=compress&cs=tinysrgb&h=600" alt="沉思肖像 清晰细腻">
+    </div>
+  </section>
+
+  <!-- 另一组图片压缩陈列  (由于用户强调"更清晰"，放置更多高清感画面) -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.9rem; margin-top: 3rem;">
+    <img style="border-radius: 1.2rem; width: 100%; height: 10rem; object-fit: cover;" src="https://images.pexels.com/photos/5879917/pexels-photo-5879917.png?auto=compress&cs=tinysrgb&h=500" alt="水中花肖像">
+    <img style="border-radius: 1.2rem; width: 100%; height: 10rem; object-fit: cover;" src="https://images.pexels.com/photos/28209698/pexels-photo-28209698.jpeg?auto=compress&cs=tinysrgb&h=500" alt="现代玻璃幕墙">
+    <img style="border-radius: 1.2rem; width: 100%; height: 10rem; object-fit: cover;" src="https://images.pexels.com/photos/9600776/pexels-photo-9600776.jpeg?auto=compress&cs=tinysrgb&h=500" alt="亚洲人像特写">
+    <img style="border-radius: 1.2rem; width: 100%; height: 10rem; object-fit: cover;" src="https://images.pexels.com/photos/27299079/pexels-photo-27299079.jpeg?auto=compress&cs=tinysrgb&h=500" alt="北京日落古建筑">
+  </div>
+
+  <!-- 极简 footer，包含交互性：年份与本地时间显示 -->
+  <footer>
+    <span>© 2026 极简项目集 · 无外部库</span>
+    <span>
+      <span id="liveTime" style="opacity:0.7;">时间载入中</span> · 
+      <a href="#" class="small-link" id="mailLink">contact@minimal.work</a>
+    </span>
+  </footer>
+</div>
+
+<script>
+  // 极简交互：显示当前时间 (本地时钟)，并且防止邮件链接默认跳转，仅提示
+  (function(){
+    const timeElement = document.getElementById('liveTime');
+    function updateClock(){
+      const now = new Date();
+      const timeString = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', second: '2-digit'});
+      if(timeElement) timeElement.textContent = `本地时间 ${timeString}`;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // 邮件链接轻提示 —— 无外部跳转 (交互占位)
+    const mailLink = document.getElementById('mailLink');
+    if(mailLink){
+      mailLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        alert('📬 邮箱：hello@minimal.work (极简作品集)');
+      });
+    }
+
+    // 页面图像缓式淡入 (仅装饰)
+    const allImgs = document.querySelectorAll('img');
+    allImgs.forEach(img => {
+      img.style.opacity = 0;
+      img.style.transition = 'opacity 0.6s ease-in';
+    });
+    window.addEventListener('load', () => {
+      allImgs.forEach(img => { img.style.opacity = 1; });
+    });
+  })();
+</script>
+</body>
+</html>

@@ -1,6 +1,8 @@
 package com.marcuschu.webcodegenerate.langgraph4j;
 
 import cn.hutool.json.JSONUtil;
+import com.marcuschu.webcodegenerate.monitor.MonitorContext;
+import com.marcuschu.webcodegenerate.monitor.MonitorContextHolder;
 import com.marcuschu.webcodegenerate.exception.BusinessException;
 import com.marcuschu.webcodegenerate.exception.ErrorCode;
 import com.marcuschu.webcodegenerate.langgraph4j.node.*;
@@ -127,9 +129,10 @@ public class CodeGenWorkflow {
      * 执行工作流（Flux 流式输出版本）
      */
     public Flux<String> executeWorkflowWithFlux(String originalPrompt, Long appId) {
+        MonitorContext monitorContext = MonitorContextHolder.capture();
         return Flux.create(sink -> {
             Thread.startVirtualThread(() -> {
-                try {
+                try (MonitorContextHolder.Scope ignored = MonitorContextHolder.open(monitorContext)) {
                     CompiledGraph<MessagesState<String>> workflow = createWorkflow();
                     WorkflowContext initialContext = WorkflowContext.builder()
                             .appId(appId)
@@ -202,9 +205,10 @@ public class CodeGenWorkflow {
      * 执行工作流（SSE 流式输出版本）
      */
     public SseEmitter executeWorkflowWithSse(String originalPrompt) {
+        MonitorContext monitorContext = MonitorContextHolder.capture();
         SseEmitter emitter = new SseEmitter(30 * 60 * 1000L);
         Thread.startVirtualThread(() -> {
-            try {
+            try (MonitorContextHolder.Scope ignored = MonitorContextHolder.open(monitorContext)) {
                 CompiledGraph<MessagesState<String>> workflow = createWorkflow();
                 WorkflowContext initialContext = WorkflowContext.builder()
                         .originalPrompt(originalPrompt)

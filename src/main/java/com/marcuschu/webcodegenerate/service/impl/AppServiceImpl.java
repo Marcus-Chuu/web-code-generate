@@ -22,6 +22,8 @@ import com.marcuschu.webcodegenerate.model.request.app.AppAddRequest;
 import com.marcuschu.webcodegenerate.model.request.app.AppQueryRequest;
 import com.marcuschu.webcodegenerate.model.vo.AppVO;
 import com.marcuschu.webcodegenerate.model.vo.UserVO;
+import com.marcuschu.webcodegenerate.monitor.MonitorContext;
+import com.marcuschu.webcodegenerate.monitor.MonitorContextHolder;
 import com.marcuschu.webcodegenerate.service.ChatHistoryService;
 import com.marcuschu.webcodegenerate.service.ScreenshotService;
 import com.marcuschu.webcodegenerate.service.UserService;
@@ -266,10 +268,14 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App>  implements AppS
         }
         // 5. 通过校验后, 添加用户消息到对话历史
         chatHistoryService.saveMessage(appId, loginUser.getId(), message, ChatHistoryMessageTypeEnum.USER);
-        // 6. 调用 AI 生成代码 (流式)
-        Flux<String> codeStream = aiCodeGeneratorFacade.generateAndSaveCodeStream(message, codeGenTypeEnum, appId);
-        // 7. 收集 AI 响应内容并在完成后记录到对话历史
-        return streamHandlerExecutor.doExecute(codeStream, chatHistoryService, appId, loginUser, codeGenTypeEnum);
+        // 在构建流和订阅流时分别恢复上下文，离开当前线程的同步调用后立即清理。
+        MonitorContext monitorContext = new MonitorContext(loginUser.getId().toString(), appId.toString());
+        try (MonitorContextHolder.Scope ignored = MonitorContextHolder.open(monitorContext)) {
+            Flux<String> codeStream = aiCodeGeneratorFacade.generateAndSaveCodeStream(message, codeGenTypeEnum, appId);
+            return MonitorContextHolder.bind(
+                    streamHandlerExecutor.doExecute(codeStream, chatHistoryService, appId, loginUser, codeGenTypeEnum),
+                    monitorContext);
+        }
     }
 
 
@@ -292,19 +298,18 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App>  implements AppS
         if (codeGenTypeEnum == null) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "不支持的代码生成类型");
         }
-        // 5. 通过校验后，添加用户消息到对话历史
+        // 5. 通过校验后, 添加用户消息到对话历史
         chatHistoryService.saveMessage(appId, loginUser.getId(), message, ChatHistoryMessageTypeEnum.USER, null);
-        // 6. 根据 agent 参数选择生成方式
-        Flux<String> codeStream;
-        if (agent) {
-            // Agent 模式: 使用工作流生成代码
-            codeStream = new CodeGenWorkflow().executeWorkflowWithFlux(message, appId);
-        } else {
-            // 传统模式：调用 AI 生成代码（流式）
-            codeStream = aiCodeGeneratorFacade.generateAndSaveCodeStream(message, codeGenTypeEnum, appId);
+        // 工作流在此捕获上下文 ; 流订阅及模型回调各自管理线程内的作用域
+        MonitorContext monitorContext = new MonitorContext(loginUser.getId().toString(), appId.toString());
+        try (MonitorContextHolder.Scope ignored = MonitorContextHolder.open(monitorContext)) {
+            Flux<String> codeStream = agent
+                    ? new CodeGenWorkflow().executeWorkflowWithFlux(message, appId)
+                    : aiCodeGeneratorFacade.generateAndSaveCodeStream(message, codeGenTypeEnum, appId);
+            return MonitorContextHolder.bind(
+                    streamHandlerExecutor.doExecute(codeStream, chatHistoryService, appId, loginUser, codeGenTypeEnum),
+                    monitorContext);
         }
-        // 7. 收集 AI 响应内容并在完成后记录到对话历史
-        return streamHandlerExecutor.doExecute(codeStream, chatHistoryService, appId, loginUser, codeGenTypeEnum);
     }
 
 

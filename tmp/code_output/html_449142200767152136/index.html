@@ -1,696 +1,716 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>STEPLIFE · 运动鞋履</title>
-    <style>
-        /* ---------- 全局重置 & 变量 ---------- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        :root {
-            --orange: #FF5A1E;
-            --deep-blue: #112B4F;
-            --bright-blue: #2E6CFF;
-            --off-white: #F9F7F2;
-            --text-dark: #101820;
-            --text-light: #FFFFFF;
-            --shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.15);
-            --radius: 24px;
-            --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--off-white);
-            color: var(--text-dark);
-            line-height: 1.5;
-            overflow-x: hidden;
-        }
-        img {
-            display: block;
-            max-width: 100%;
-            height: auto;
-        }
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-        ul {
-            list-style: none;
-        }
-        .container {
-            width: min(1200px, 92%);
-            margin-inline: auto;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>疾步 · 生命力运动鞋</title>
+  <style>
+    /* ===== 全局样式 ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        /* ---------- 动感背景辅助线 ---------- */
-        .bg-energetic {
-            background-color: var(--off-white);
-            background-image: 
-                radial-gradient(circle at 20% 30%, rgba(255, 90, 30, 0.03) 0%, transparent 25%),
-                radial-gradient(circle at 90% 70%, rgba(46, 108, 255, 0.04) 0%, transparent 30%);
-        }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f7f7f2;
+      color: #1a1a1a;
+      line-height: 1.5;
+      scroll-behavior: smooth;
+    }
 
-        /* ---------- 按钮 & 通用组件 ---------- */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            background: var(--orange);
-            color: white;
-            padding: 12px 28px;
-            border-radius: 60px;
-            font-weight: 600;
-            font-size: 1rem;
-            border: 2px solid transparent;
-            transition: var(--transition);
-            box-shadow: 0 8px 16px -6px rgba(255, 90, 30, 0.3);
-            cursor: pointer;
-            letter-spacing: 0.3px;
-        }
-        .btn:hover {
-            background: transparent;
-            border-color: var(--orange);
-            color: var(--orange);
-            transform: translateY(-3px);
-        }
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--deep-blue);
-            color: var(--deep-blue);
-            box-shadow: none;
-        }
-        .btn-outline:hover {
-            background: var(--deep-blue);
-            color: white;
-            border-color: var(--deep-blue);
-        }
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
 
-        .section-title {
-            font-size: clamp(2rem, 5vw, 3.2rem);
-            font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 16px;
-            text-transform: uppercase;
-            letter-spacing: -0.02em;
-        }
-        .title-accent {
-            color: var(--orange);
-            position: relative;
-            display: inline-block;
-        }
-        .section-sub {
-            font-size: 1.1rem;
-            opacity: 0.7;
-            max-width: 600px;
-        }
+    .container {
+      width: min(1200px, 100% - 2rem);
+      margin: 0 auto;
+    }
 
-        /* ---------- 头部导航 ---------- */
-        .navbar {
-            background: rgba(17, 43, 79, 0.95);
-            backdrop-filter: blur(8px);
-            padding: 14px 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 8px 20px -12px rgba(0,0,0,0.5);
-        }
-        .nav-wrap {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: white;
-        }
-        .logo img {
-            width: 44px;
-            height: 44px;
-            background: white;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--orange);
-        }
-        .logo span {
-            font-size: 1.8rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            color: white;
-        }
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.85);
-        }
-        .nav-links a {
-            transition: var(--transition);
-            padding: 4px 0;
-            border-bottom: 2px solid transparent;
-        }
-        .nav-links a:hover {
-            border-color: var(--orange);
-            color: white;
-        }
-        .menu-icon {
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            background: none;
-            border: 0;
-            cursor: pointer;
-        }
-        .menu-icon span {
-            width: 28px;
-            height: 3px;
-            background: white;
-            border-radius: 4px;
-            transition: 0.3s;
-        }
+    /* ===== 强调色与渐变 ===== */
+    .gradient-text {
+      background: linear-gradient(130deg, #FF5E1A, #F9E000, #16a085);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: inline-block;
+    }
 
-        /* ---------- HERO 大横幅 ---------- */
-        .hero {
-            background: linear-gradient(145deg, #FFFFFF 0%, #F0EDE6 100%);
-            padding: 3rem 0 5rem;
-            overflow: hidden;
-        }
-        .hero-inner {
-            display: flex;
-            align-items: center;
-            gap: 3rem;
-            flex-wrap: wrap;
-        }
-        .hero-copy {
-            flex: 1 1 360px;
-        }
-        .hero-copy h1 {
-            font-size: clamp(3.2rem, 8vw, 6rem);
-            font-weight: 800;
-            line-height: 0.9;
-            color: var(--deep-blue);
-            text-transform: uppercase;
-            margin-bottom: 20px;
-        }
-        .hero-copy .highlight {
-            color: var(--orange);
-        }
-        .hero-img {
-            flex: 1 1 300px;
-            background: var(--deep-blue);
-            border-radius: 40px;
-            padding: 12px;
-            transform: rotate(2deg);
-            box-shadow: var(--shadow);
-        }
-        .hero-img img {
-            width: 100%;
-            height: 400px;
-            object-fit: cover;
-            border-radius: 30px;
-        }
-        .badge-group {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-top: 20px;
-        }
-        .stat-item {
-            display: inline-block;
-            background: white;
-            padding: 6px 16px;
-            border-radius: 100px;
-            font-weight: 600;
-            border: 1px solid rgba(0,0,0,0.05);
-            box-shadow: 0 4px 8px -6px rgba(0,0,0,0.1);
-        }
+    /* ===== 头部导航 ===== */
+    .header {
+      background-color: #111;
+      color: white;
+      padding: 0.8rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+      background: rgba(0, 0, 0, 0.85);
+    }
 
-        /* ---------- 品牌标语栏 (生命力横幅) ---------- */
-        .energy-strip {
-            background: var(--deep-blue);
-            color: white;
-            padding: 1.8rem 0;
-            margin: 0;
-        }
-        .energy-strip p {
-            font-size: 1.3rem;
-            font-weight: 300;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-        .energy-strip span {
-            background: var(--orange);
-            padding: 2px 14px;
-            border-radius: 50px;
-            font-weight: 600;
-        }
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
 
-        /* ---------- 商品卡片区 ---------- */
-        .featured-section {
-            padding: 5rem 0;
-        }
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 28px;
-            margin-top: 48px;
-        }
-        .product-card {
-            background: white;
-            border-radius: 24px;
-            overflow: hidden;
-            box-shadow: 0 12px 28px -10px rgba(0, 0, 0, 0.08);
-            transition: var(--transition);
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            border: 1px solid rgba(17, 43, 79, 0.04);
-        }
-        .product-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 25px 40px -12px rgba(17, 43, 79, 0.2);
-        }
-        .product-img {
-            width: 100%;
-            height: 210px;
-            object-fit: cover;
-            background-color: #E4E0DA;
-        }
-        .card-info {
-            padding: 20px 16px 22px;
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-        }
-        .product-tag {
-            color: var(--orange);
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 0.3px;
-        }
-        .product-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin: 6px 0 4px;
-        }
-        .product-price {
-            font-weight: 800;
-            font-size: 1.3rem;
-            color: var(--deep-blue);
-            margin-top: 10px;
-        }
-        .price-unit {
-            font-size: 0.8rem;
-            font-weight: 400;
-            margin-left: 2px;
-        }
-        .add-cart {
-            margin-top: 16px;
-            background: white;
-            border: 2px solid var(--deep-blue);
-            color: var(--deep-blue);
-            padding: 8px 14px;
-            border-radius: 50px;
-            text-align: center;
-            font-weight: 600;
-            transition: var(--transition);
-            cursor: pointer;
-        }
-        .add-cart:hover {
-            background: var(--deep-blue);
-            color: white;
-        }
+    .logo {
+      font-size: 1.9rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      line-height: 1;
+    }
 
-        /* ---------- 活力叙事区(挂图) ---------- */
-        .story-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 30px;
-            background: white;
-            padding: 4rem 0;
-        }
-        .story-media {
-            flex: 1 1 300px;
-            position: relative;
-            min-height: 300px;
-        }
-        .story-media img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 32px;
-            box-shadow: var(--shadow);
-            transition: 0.2s ease;
-        }
-        .story-content {
-            flex: 1 1 280px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 0 10px;
-        }
-        .quote-highlight {
-            background: var(--orange);
-            color: white;
-            padding: 4px 12px;
-            width: fit-content;
-            border-radius: 60px;
-            font-weight: bold;
-            margin-bottom: 24px;
-        }
-        .image-cluster {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-top: 24px;
-        }
-        .image-cluster img {
-            height: 120px;
-            width: 100%;
-            border-radius: 16px;
-            object-fit: cover;
-        }
+    .logo span {
+      background: linear-gradient(135deg, #FF6B35, #f8c630);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
 
-        /* ---------- 尾部 CTA ---------- */
-        .cta-footer {
-            background: linear-gradient(135deg, #112B4F, #0F1F36);
-            padding: 3rem 0;
-            color: white;
-        }
-        .cta-inner {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 30px;
-        }
-        .cta-text h2 {
-            font-size: 2rem;
-            margin-bottom: 12px;
-        }
-        .social-icons {
-            display: flex;
-            gap: 18px;
-        }
-        .social-icons a {
-            background: rgba(255,255,255,0.08);
-            padding: 10px 14px;
-            border-radius: 30px;
-            backdrop-filter: blur(2px);
-        }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      font-weight: 600;
+    }
 
-        /* ---------- 移动端适配 ---------- */
-        @media screen and (max-width: 720px) {
-            .nav-links {
-                display: none;
-            }
-            .menu-icon {
-                display: flex;
-            }
-            .nav-wrap {
-                flex-wrap: wrap;
-            }
-            .hero-inner {
-                flex-direction: column-reverse;
-                align-items: start;
-            }
-            .hero-img img {
-                height: 260px;
-            }
-            .card-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 12px;
-            }
-            .image-cluster {
-                grid-template-columns: 1fr;
-            }
-            .badge-group {
-                flex-direction: column;
-            }
-        }
-        @media screen and (max-width: 480px) {
-            .card-grid {
-                grid-template-columns: 1fr;
-            }
-            .product-card {
-                max-width: 350px;
-                margin-inline: auto;
-                width: 100%;
-            }
-        }
-    </style>
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      transition: 0.2s;
+      padding: 0.25rem 0;
+      border-bottom: 2px solid transparent;
+    }
+
+    .nav-links a:hover {
+      border-bottom-color: #FF6B35;
+      color: #FFD166;
+    }
+
+    .menu-btn {
+      display: none;
+      background: none;
+      border: 0;
+      font-size: 2rem;
+      color: white;
+      cursor: pointer;
+    }
+
+    /* ===== 移动导航 ===== */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        gap: 0.8rem;
+        padding: 1rem 0;
+        border-top: 1px solid #333;
+        margin-top: 0.8rem;
+      }
+
+      .nav-links.show {
+        display: flex;
+      }
+
+      .menu-btn {
+        display: block;
+      }
+    }
+
+    /* ===== HERO 区域 ===== */
+    .hero {
+      background: #111;
+      color: white;
+      padding: 3rem 0 4rem;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, #ff7f2a30, transparent 70%);
+      top: -50px;
+      right: -50px;
+      border-radius: 50%;
+      z-index: 0;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-copy h1 {
+      font-size: clamp(2.8rem, 8vw, 5rem);
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      font-weight: 900;
+      letter-spacing: -1px;
+    }
+
+    .hero-copy p {
+      font-size: 1.2rem;
+      opacity: 0.85;
+      max-width: 450px;
+      margin-bottom: 2.2rem;
+    }
+
+    .hero-img {
+      border-radius: 30px 30px 30px 30px;
+      box-shadow: 20px 20px 0 #FF6B35;
+      transition: transform 0.3s;
+    }
+
+    .hero-img:hover {
+      transform: translateY(-8px) rotate(-1deg);
+    }
+
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .btn {
+      padding: 0.9rem 2.5rem;
+      border-radius: 60px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.3s;
+      background: white;
+      color: #111;
+      border: 2px solid transparent;
+      display: inline-block;
+      font-size: 1rem;
+    }
+
+    .btn-primary {
+      background: #FF6B35;
+      color: white;
+      border-color: #FF6B35;
+    }
+
+    .btn-primary:hover {
+      background: white;
+      color: #FF6B35;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: white;
+      border-color: white;
+    }
+
+    .btn-outline:hover {
+      background: white;
+      color: #111;
+    }
+
+    /* ===== 活力标语跑马灯 ===== */
+    .marquee {
+      background: #F9E000;
+      color: #0a0a0a;
+      font-weight: 800;
+      overflow: hidden;
+      padding: 1rem 0;
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+
+    .marquee-content {
+      display: inline-block;
+      padding-left: 100%;
+      animation: scroll 18s linear infinite;
+    }
+
+    @keyframes scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* ===== 商品卡片区 ===== */
+    .featured-section {
+      padding: 4rem 0;
+      background: #fafaf5;
+    }
+
+    .section-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .section-title span {
+      background: #FF5E1A;
+      color: white;
+      border-radius: 40px;
+      padding: 0.2rem 1rem;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 2rem;
+      margin-top: 2.5rem;
+    }
+
+    .product-card {
+      background: #fff;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+      transition: box-shadow 0.3s, transform 0.3s;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #eeeeee;
+    }
+
+    .product-card:hover {
+      box-shadow: 0 20px 30px rgba(0, 0, 0, 0.05);
+      transform: translateY(-6px);
+    }
+
+    .product-img {
+      background: #f0f0f0;
+      aspect-ratio: 1/1;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .product-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+
+    .product-card:hover .product-img img {
+      transform: scale(1.03);
+    }
+
+    .product-info {
+      padding: 1.5rem 1rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .product-name {
+      font-weight: 700;
+      font-size: 1.3rem;
+      margin-bottom: 0.3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .product-category {
+      color: #777;
+      font-size: 0.9rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .price-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+    }
+
+    .price {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: #ca3b00;
+    }
+
+    .old-price {
+      font-size: 1rem;
+      color: #aaa;
+      text-decoration: line-through;
+      font-weight: 400;
+    }
+
+    .btn-sneaky {
+      background: #16221f;
+      color: white;
+      border: none;
+      padding: 0.6rem 1.5rem;
+      border-radius: 40px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: 0.25s;
+      border: 1px solid #16221f;
+    }
+
+    .btn-sneaky:hover {
+      background: #FF6B35;
+      border-color: #FF6B35;
+    }
+
+    /* 额外标志 */
+    .badge-tag {
+      background: #EA1F64;
+      color: white;
+      font-size: 0.75rem;
+      padding: 0.2rem 0.7rem;
+      border-radius: 40px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-left: 0.3rem;
+    }
+
+    /* ===== 热血风格横幅 ===== */
+    .energy-strip {
+      background: linear-gradient(110deg, #0b1920, #1e3a34);
+      color: white;
+      padding: 3rem 0;
+    }
+
+    .energy-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 2rem;
+      text-align: center;
+    }
+
+    .energy-item h3 {
+      font-size: 2.8rem;
+      font-weight: 900;
+      color: #F9E000;
+    }
+
+    /* ===== 运动跃动时刻 (图文) ===== */
+    .gallery-section {
+      padding: 4rem 0;
+      background-color: #dbe4e0;
+    }
+
+    .gallery-flex {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .shot {
+      border-radius: 28px;
+      overflow: hidden;
+      flex: 1 1 220px;
+      min-width: 180px;
+      max-width: 300px;
+      border: 4px solid white;
+      box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.2);
+      transition: 0.2s ease;
+    }
+
+    .shot img {
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      width: 100%;
+      filter: saturate(1.2);
+    }
+
+    .shot:hover {
+      transform: scale(0.95) rotate(1deg);
+      filter: drop-shadow(0 0 10px #FF6B35aa);
+    }
+
+    /* ===== 引用大段 ===== */
+    .testimonial {
+      background: #ffffdb;
+      padding: 3rem 0;
+    }
+
+    .quote-box {
+      max-width: 850px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .quote-box i {
+      font-size: 3rem;
+      color: #f4b942;
+      opacity: 0.6;
+    }
+
+    .quote-box p {
+      font-size: 1.8rem;
+      line-height: 1.4;
+      font-weight: 500;
+      margin: 1rem 0;
+    }
+
+    /* ===== 页脚 ===== */
+    .footer {
+      background: #111;
+      color: #bbb;
+      padding: 2.5rem 0;
+      margin-top: 0;
+    }
+
+    .footer-grid {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .footer-links a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 400;
+    }
+
+    .footer-links a:hover {
+      color: #F9E000;
+    }
+
+    @media (max-width: 760px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-img {
+        width: 100%;
+      }
+
+      .nav-links.show {
+        display: flex;
+      }
+    }
+  </style>
 </head>
 <body>
-    <!-- 导航 -->
-    <nav class="navbar">
-        <div class="container nav-wrap">
-            <div class="logo">
-                <!-- LOGO 素材 -->
-                <img src="https://dashscope-5859.oss-cn-wulanchabu-acdr-1.aliyuncs.com/1d/7c/20260902/6514ac22/dc9e2880-c718-4b4d-86ec-8590d58814ab4120479263.png?Expires=1788445424&OSSAccessKeyId=LTAI5tPxpiCM2hjmWrFXrym1&Signature=yJfHHncuSo%2BWmO8NFjE%2B5wVYwnQ%3D" alt="品牌logo 闪电">
-                <span>VOLT</span>
-            </div>
-            <div class="nav-links">
-                <a href="#">新品</a>
-                <a href="#">男鞋</a>
-                <a href="#">女鞋</a>
-                <a href="#">运动</a>
-                <a href="#">故事</a>
-            </div>
-            <button class="menu-icon" aria-label="菜单">
-                <span></span><span></span><span></span>
-            </button>
-        </div>
-    </nav>
 
-    <!-- HERO 活力头版 + 商品卡片 与实景融合 -->
-    <section class="hero bg-energetic">
-        <div class="container hero-inner">
-            <div class="hero-copy">
-                <h1>RUN <span class="highlight">WITH</span> POWER</h1>
-                <p style="font-size: 1.2rem; margin-top: -8px; max-width: 500px;">每一步都注入生命力。街头、球场、城市峡谷 —— 全新动能中底。</p>
-                <div class="badge-group">
-                    <span class="stat-item">⚡ 全掌气垫</span>
-                    <span class="stat-item">🔥 超轻织物</span>
-                </div>
-                <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px;">
-                    <a href="#" class="btn">立即选购</a>
-                    <a href="#" class="btn btn-outline" style="background: white; border-color: white;">探索系列</a>
-                </div>
-            </div>
-            <div class="hero-img">
-                <!-- 跳跃动作 活力 -->
-                <img src="https://images.pexels.com/photos/8283582/pexels-photo-8283582.jpeg?auto=compress&cs=tinysrgb&h=350" alt="跳跃中的动感运动鞋">
-            </div>
-        </div>
-    </section>
-
-    <!-- 能量赛跑标语 -->
-    <div class="energy-strip">
-        <div class="container">
-            <p> #UNSTOPPABLE <span>20% OFF</span> 引爆你的秋天</p>
-        </div>
+  <!-- 头部导航 -->
+  <header class="header">
+    <div class="container nav-bar">
+      <div class="logo">⚡<span>疾峰</span> SNEAKERS</div>
+      <button class="menu-btn" id="menuToggle" aria-label="打开菜单">☰</button>
+      <nav class="nav-links" id="navMenu">
+        <a href="#home">主页</a>
+        <a href="#featured">当季爆款</a>
+        <a href="#energy">能量科技</a>
+        <a href="#moments">运动瞬间</a>
+      </nav>
     </div>
+  </header>
 
-    <!-- 商品卡片特别展示 -->
-    <section class="featured-section container">
-        <div style="display: flex; justify-content: space-between; align-items: end; flex-wrap: wrap;">
-            <div>
-                <h2 class="section-title">新到 <span class="title-accent">动力</span> 系列</h2>
-                <p class="section-sub">轻盈 · 抓地 · 包裹</p>
-            </div>
+  <!-- HERO -->
+  <section id="home" class="hero">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <h1>跑向 <span class="gradient-text">无界</span><br>生命律动</h1>
+        <p>BORN TO MOVE ｜ 疾步TR系列，融合街头灵感与高性能回弹。每一步，都释放躁动细胞。</p>
+        <div class="btn-group">
+          <a href="#featured" class="btn btn-primary">立即抢购</a>
+          <a href="#moments" class="btn btn-outline">查看故事</a>
         </div>
-        <div class="card-grid">
-            <!-- 卡片1 猎鹰配色 -->
-            <div class="product-card">
-                <img class="product-img" src="https://images.pexels.com/photos/2310905/pexels-photo-2310905.jpeg?auto=compress&cs=tinysrgb&h=350" alt="灰色木轨鞋">
-                <div class="card-info">
-                    <span class="product-tag">LIMITED</span>
-                    <div class="product-title">Falcon Glide</div>
-                    <div style="color:#555;">猎鹰系列</div>
-                    <div class="product-price">$129 <span class="price-unit">USD</span></div>
-                    <button class="add-cart">加入购物袋 →</button>
-                </div>
-            </div>
-            <!-- 卡片2 红色兜风 -->
-            <div class="product-card">
-                <img class="product-img" src="https://images.pexels.com/photos/18910019/pexels-photo-18910019.jpeg?auto=compress&cs=tinysrgb&h=350" alt="伸出车窗的鞋">
-                <div class="card-info">
-                    <span class="product-tag">NEW</span>
-                    <div class="product-title">Roadster Frees</div>
-                    <div style="color:#555;">自由精神</div>
-                    <div class="product-price">$149 <span class="price-unit">USD</span></div>
-                    <button class="add-cart">加入购物袋 →</button>
-                </div>
-            </div>
-            <!-- 卡片3 篮球飞人 黑色幽默 -->
-            <div class="product-card">
-                <img class="product-img" src="https://images.pexels.com/photos/1522381/pexels-photo-1522381.jpeg?auto=compress&cs=tinysrgb&h=350" alt="户外运球特写">
-                <div class="card-info">
-                    <span class="product-tag">HOT</span>
-                    <div class="product-title">Court Shadow</div>
-                    <div style="color:#555;">街头运球</div>
-                    <div class="product-price">$119 <span class="price-unit">USD</span></div>
-                    <button class="add-cart">加入购物袋 →</button>
-                </div>
-            </div>
-            <!-- 卡片4 灰色鞋特写 -->
-            <div class="product-card">
-                <img class="product-img" src="https://images.pexels.com/photos/6388390/pexels-photo-6388390.jpeg?auto=compress&cs=tinysrgb&h=350" alt="健身房黑白鞋">
-                <div class="card-info">
-                    <span class="product-tag">GRAY</span>
-                    <div class="product-title">Gym Strides</div>
-                    <div style="color:#555;">训练专用</div>
-                    <div class="product-price">$99 <span class="price-unit">USD</span></div>
-                    <button class="add-cart">加入购物袋 →</button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 品牌生命力叙事  融入素材 -->
-    <div class="story-grid container" style="border-radius: 30px; padding-left: 2rem; padding-right: 2rem;">
-        <div class="story-media">
-            <!-- 群像动感 老年人毽球 (生命力) -->
-            <img src="https://images.pexels.com/photos/36681500/pexels-photo-36681500.jpeg?auto=compress&cs=tinysrgb&h=350" alt="活力老年人户外毽球">
-        </div>
-        <div class="story-content">
-            <span class="quote-highlight"> 生命力IN MOTION </span>
-            <h2 style="font-size: 2.4rem; font-weight: 700;">从晨曦到霓虹，城市即跑道</h2>
-            <p style="margin: 20px 0; font-size: 1.05rem; opacity: 0.8;">无论是公园角落的毽球，还是夜晚的街头篮球 —— 每双鞋都见证你的脉搏。</p>
-            <div class="image-cluster">
-                <img src="https://images.pexels.com/photos/16382751/pexels-photo-16382751.jpeg?auto=compress&cs=tinysrgb&h=350" alt="城市水渍跑步">
-                <img src="https://images.pexels.com/photos/36542095/pexels-photo-36542095.jpeg?auto=compress&cs=tinysrgb&h=350" alt="猎鹰动态飞行">
-            </div>
-        </div>
+      </div>
+      <div style="position: relative;">
+        <img class="hero-img" src="https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg?auto=compress&cs=tinysrgb&h=800" alt="漂浮现代运动鞋 多彩活力">
+      </div>
     </div>
+  </section>
 
-    <!-- 三张并排风格卡片 / 第二组商品 -->
-    <div style="padding: 4rem 0; background-color: #fff;">
-        <div class="container">
-            <h2 class="section-title" style="font-size: 2rem;">经典 · 街头制霸</h2>
-            <div class="card-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 25px;">
-                <!-- 从素材挑三双鞋展示 -->
-                <div class="product-card">
-                    <img class="product-img" src="https://images.pexels.com/photos/1456706/pexels-photo-1456706.jpeg?auto=compress&cs=tinysrgb&h=350" alt="彩色鞋顶视角">
-                    <div class="card-info">
-                        <div class="product-title">Urban Top</div>
-                        <div class="product-price">$89</div>
-                        <button class="add-cart">速抢</button>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <img class="product-img" src="https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg?auto=compress&cs=tinysrgb&h=350" alt="漂浮动感鞋子">
-                    <div class="card-info">
-                        <div class="product-title">Levit8</div>
-                        <div class="product-price">$139</div>
-                        <button class="add-cart">速抢</button>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <img class="product-img" src="https://images.pexels.com/photos/8979071/pexels-photo-8979071.jpeg?auto=compress&cs=tinysrgb&h=350" alt="橙色背景耐克风">
-                    <div class="card-info">
-                        <div class="product-title">Falcon Jay</div>
-                        <div class="product-price">$109</div>
-                        <button class="add-cart">速抢</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <!-- 跑马灯生命力宣言 -->
+  <div class="marquee">
+    <div class="marquee-content">
+      ENERGY IS LIFE &nbsp;⚡&nbsp; JUST MOVE &nbsp;🔥&nbsp; 突破引力 &nbsp;☄️&nbsp; 唤醒双足动能 &nbsp;🏃&nbsp;
     </div>
+  </div>
 
-    <!-- 深夜球赛/背景氛围 -->
-    <section style="background: #0c1a2b; padding: 4rem 0; color: white;">
-        <div class="container" style="display: flex; gap: 30px; flex-wrap: wrap; align-items: center;">
-            <div style="flex: 1 1 200px;">
-                <h2 style="font-size: 2.6rem;">夜斗 · HIGH SPIKE</h2>
-                <p style="margin: 16px 0;">黑白色调 能量不减</p>
-                <img src="https://images.pexels.com/photos/14262645/pexels-photo-14262645.jpeg?auto=compress&cs=tinysrgb&h=350" alt="黑白扣篮" style="width: 100%; max-height: 300px; object-fit: cover; border-radius: 30px;">
-            </div>
-            <div style="flex: 1 1 200px;">
-                <img src="https://images.pexels.com/photos/12725054/pexels-photo-12725054.jpeg?auto=compress&cs=tinysrgb&h=350" alt="红黑鞋戏剧光" style="width: 100%; border-radius: 24px;">
-            </div>
+  <!-- 商品卡片区 -->
+  <section id="featured" class="featured-section container" style="padding-bottom: 2.5rem;">
+    <div class="section-title">🥇 本周热门战靴 <span>LIVE</span></div>
+    <div class="product-grid" id="productGrid">
+      <!-- 卡1: 黑黄训练鞋 -->
+      <div class="product-card">
+        <div class="product-img">
+          <img src="https://images.pexels.com/photos/1456737/pexels-photo-1456737.jpeg?auto=compress&cs=tinysrgb&h=600" alt="黑黄透气训练鞋">
         </div>
-    </section>
-
-    <!-- 页脚 CTA -->
-    <footer class="cta-footer">
-        <div class="container cta-inner">
-            <div class="cta-text">
-                <h2>踏入疾风 · 野性发售</h2>
-                <p style="opacity:0.8;">邀码：SPRINT 额外减¥30</p>
-            </div>
-            <div class="social-icons">
-                <a href="#">▲ 运动</a>
-                <a href="#">◆ 社群</a>
-                <a href="#">● 抖音</a>
-            </div>
+        <div class="product-info">
+          <div class="product-name">Crosstrainer Flux <span class="badge-tag">-15%</span></div>
+          <div class="product-category">多功能交叉训练</div>
+          <div class="price-row">
+            <span><span class="price">¥699</span> <span class="old-price">¥829</span></span>
+            <button class="btn-sneaky" data-add="加入购物车">+ 添加</button>
+          </div>
         </div>
-        <div style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 2rem; text-align: center; padding-top: 1.5rem; font-size: 0.85rem; opacity: 0.6;">© STEPLIFE, Move With Intensity</div>
-    </footer>
+      </div>
+      <!-- 卡2: 高帮黑白 -->
+      <div class="product-card">
+        <div class="product-img">
+          <img src="https://images.pexels.com/photos/20547378/pexels-photo-20547378.jpeg?auto=compress&cs=tinysrgb&h=600" alt="黑高帮运动鞋">
+        </div>
+        <div class="product-info">
+          <div class="product-name">Court Hi-Top</div>
+          <div class="product-category">经典帆布 / 滑板</div>
+          <div class="price-row">
+            <span><span class="price">¥549</span></span>
+            <button class="btn-sneaky" data-add="加入购物车">+ 添加</button>
+          </div>
+        </div>
+      </div>
+      <!-- 卡3: 蓝绿水底潮鞋 -->
+      <div class="product-card">
+        <div class="product-img">
+          <img src="https://images.pexels.com/photos/1456706/pexels-photo-1456706.jpeg?auto=compress&cs=tinysrgb&h=600" alt="蓝绿嘻哈街头鞋">
+        </div>
+        <div class="product-info">
+          <div class="product-name">Street Flow Verde</div>
+          <div class="product-category">城市街头 / 轻量</div>
+          <div class="price-row">
+            <span><span class="price">¥759</span></span>
+            <button class="btn-sneaky" data-add="加入购物车">+ 添加</button>
+          </div>
+        </div>
+      </div>
+      <!-- 卡4: 耐克橙背景超清细节 -->
+      <div class="product-card">
+        <div class="product-img">
+          <img src="https://images.pexels.com/photos/8979071/pexels-photo-8979071.jpeg?auto=compress&cs=tinysrgb&h=600" alt="橙色背景运动鞋">
+        </div>
+        <div class="product-info">
+          <div class="product-name">Nike Air Zoom</div>
+          <div class="product-category">实战 / 缓震</div>
+          <div class="price-row">
+            <span><span class="price">¥1199</span></span>
+            <button class="btn-sneaky" data-add="加入购物车">+ 添加</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <!-- 原生 JS 简单交互：移动端菜单 / 加购提示 -->
-    <script>
-        (function() {
-            // 移动菜单简易切换（展示交互，无动态样式代替）
-            const menuBtn = document.querySelector('.menu-icon');
-            const navWrap = document.querySelector('.nav-wrap');
-            if (menuBtn) {
-                menuBtn.addEventListener('click', function() {
-                    // 切换图片式简易隐藏
-                    const navLinks = document.querySelector('.nav-links');
-                    if (navLinks) {
-                        if (navLinks.style.display === 'flex') {
-                            navLinks.style.display = 'none';
-                        } else {
-                            // 简易响应式内联
-                            navLinks.style.display = 'flex';
-                            navLinks.style.flexDirection = 'column';
-                            navLinks.style.width = '100%';
-                            navLinks.style.alignItems = 'center';
-                            navLinks.style.padding = '15px 0 2px';
-                        }
-                    }
-                });
-            }
+  <!-- 生命能量 数据乱流 -->
+  <section id="energy" class="energy-strip">
+    <div class="container energy-grid">
+      <div>
+        <h3>86%</h3>
+        <p>能量反弹提升</p>
+      </div>
+      <div>
+        <h3>12K</h3>
+        <p>步态跑者测试</p>
+      </div>
+      <div>
+        <h3>24g</h3>
+        <p>轻若无物</p>
+      </div>
+      <div>
+        <h3>∞</h3>
+        <p>无界生命力</p>
+      </div>
+    </div>
+  </section>
 
-            // 商品卡片按钮 “加入购物袋” 反馈
-            const buttons = document.querySelectorAll('.add-cart');
-            buttons.forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    this.textContent = '✓ 已加购';
-                    this.style.background = '#112B4F';
-                    this.style.color = 'white';
-                    this.style.borderColor = '#112B4F';
-                    setTimeout(() => {
-                        this.textContent = '加入购物袋 →';
-                        this.style.background = 'white';
-                        this.style.color = '#112B4F';
-                    }, 1200);
-                });
-            });
+  <!-- 运动氛围画廊 + 球场驰骋 -->
+  <section id="moments" class="gallery-section">
+    <div class="container">
+      <div class="section-title" style="display: block; text-align: left; color:#0f1f1a;">🔥 动感实拍</div>
+      <div class="gallery-flex">
+        <div class="shot"><img src="https://images.pexels.com/photos/1522381/pexels-photo-1522381.jpeg?auto=compress&cs=tinysrgb&h=650" alt="篮球运球突破"></div>
+        <div class="shot"><img src="https://images.pexels.com/photos/2310905/pexels-photo-2310905.jpeg?auto=compress&cs=tinysrgb&h=650" alt="铁路灰色运动鞋"></div>
+        <div class="shot"><img src="https://images.pexels.com/photos/8858122/pexels-photo-8858122.jpeg?auto=compress&cs=tinysrgb&h=650" alt="涂鸦墙彩色鞋"></div>
+        <div class="shot"><img src="https://images.pexels.com/photos/13080356/pexels-photo-13080356.jpeg?auto=compress&cs=tinysrgb&h=650" alt="白鞋户外阳光"></div>
+      </div>
+    </div>
+  </section>
 
-            // 优雅折叠
-            const links = document.querySelectorAll('.nav-links a');
-            links.forEach(l => l.addEventListener('click', () => {
-                const navLinks = document.querySelector('.nav-links');
-                if(navLinks && window.innerWidth < 720) {
-                    navLinks.style.display = 'none';
-                }
-            }));
-        })();
-    </script>
+  <!-- 街头经典 – 广告词 -->
+  <div class="testimonial">
+    <div class="quote-box">
+      <i>❝</i>
+      <p>穿上疾峰，脚底像踩了弹簧。城市就是游乐场，<br>我们生来就要流汗、冲刺、跳跃。</p>
+      <div style="color: #444;">— 街头跑者 · 阿哲</div>
+    </div>
+  </div>
 
-    <!-- （根据素材补充）利用更多素材点缀不干扰 -->
-    <!-- 整体包含生命感多图，但保持性能 -->
+  <!-- 页脚 -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-links">
+        <a href="#">帮助</a>
+        <a href="#">配送</a>
+        <a href="#">退换</a>
+        <a href="#">会员</a>
+      </div>
+      <p style="margin:0">© 2025 SNEAKER BLAZE · 用脉搏呼吸</p>
+    </div>
+  </footer>
+
+  <!-- 交互 JavaScript：移动菜单、商品点击反馈，应用简洁 -->
+  <script>
+    (function() {
+      // 菜单切换
+      const menuToggle = document.getElementById('menuToggle');
+      const navMenu = document.getElementById('navMenu');
+      if (menuToggle && navMenu) {
+        menuToggle.addEventListener('click', function() {
+          navMenu.classList.toggle('show');
+        });
+      }
+
+      // 添加购物车按钮点击动画 (模拟)
+      const allBtns = document.querySelectorAll('.btn-sneaky');
+      allBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          btn.style.transform = 'scale(0.95)';
+          btn.textContent = '已加入 ✓';
+          btn.style.background = '#2E7D32';
+          btn.style.borderColor = '#2E7D32';
+          setTimeout(() => {
+            btn.style.transform = '';
+            btn.textContent = '+ 添加';
+            btn.style.background = '';
+            btn.style.borderColor = '';
+          }, 1200);
+        });
+      });
+      
+      // 辅助关闭菜单点击链接后自动收起
+      const links = document.querySelectorAll('.nav-links a');
+      links.forEach(link => {
+        link.addEventListener('click', () => {
+          navMenu.classList.remove('show');
+        });
+      });
+
+      // 部分揭示卡片内容 —— 额外增加对图片的美观处理(全部使用高清链接已替换为h=600或800)
+      // 使用高清素材，同时保留活力
+      console.log('疾峰 · 生命运动已加载');
+    })();
+  </script>
 </body>
 </html>
