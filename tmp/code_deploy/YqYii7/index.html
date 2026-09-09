@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>极简 · 作品集 | 项目经历</title>
+  <title>极简 · 个人作品集（项目经历）</title>
   <style>
-    /* ----- 全局重置 & 极简基调 ----- */
+    /* ----- 全局极简基调：洁净、通透 ----- */
     * {
       margin: 0;
       padding: 0;
@@ -13,90 +13,81 @@
     }
 
     body {
-      background: #faf9f8;
+      background: #fbfaf9;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      color: #1e1e1e;
+      color: #1d1d1d;
       line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-      padding: 2rem 1.2rem 4rem;
+      padding: 2.5rem 1.5rem 4rem;
       max-width: 1200px;
       margin: 0 auto;
       letter-spacing: 0.01em;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* 极简标题体系，去除多余装饰 */
+    /* 标题体系：静默但有层次 */
     h1, h2, h3 {
       font-weight: 400;
       letter-spacing: -0.01em;
     }
-
     h1 {
-      font-size: clamp(2.2rem, 7vw, 3.2rem);
-      margin-bottom: 0.5rem;
+      font-size: clamp(2.4rem, 7vw, 3.6rem);
       font-weight: 300;
+      margin-bottom: 0.6rem;
     }
-
     h2 {
-      font-size: 1.4rem;
-      font-weight: 350;
-      border-bottom: 1px solid #d0cfcc;
-      padding-bottom: 0.6rem;
-      margin: 3.2rem 0 2rem;
+      font-size: 1.5rem;
+      font-weight: 400;
+      border-bottom: 1px solid #ddd9d5;
+      padding-bottom: 0.7rem;
+      margin: 3.4rem 0 2.2rem;
       letter-spacing: 0.02em;
     }
-
     h3 {
       font-size: 1.1rem;
       font-weight: 450;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.4rem;
     }
 
+    /* 极简链接样式 */
     a {
-      color: #2c2c2c;
+      color: #2d2d2d;
       text-decoration: none;
-      border-bottom: 1px solid #b0afac;
+      border-bottom: 1px solid #c4c1bd;
       transition: border-color 0.2s, color 0.2s;
     }
-
     a:hover {
-      border-bottom-color: #171717;
+      border-color: #000;
       color: #000;
     }
 
-    .container {
-      margin: 0 auto;
+    /* 头像/名字区 */
+    .hero {
+      margin: 0.5rem 0 3.5rem;
     }
-
-    /* ---------- 头部：极简·项目经历为主 ---------- */
-    .header-minimal {
-      margin: 1rem 0 3rem;
-    }
-
-    .header-sub {
+    .hero-sub {
       font-size: 1rem;
-      color: #5a5956;
-      max-width: 600px;
+      color: #5f5d59;
+      max-width: 650px;
+      font-weight: 330;
+      border-left: 2px solid #d0ceca;
+      padding-left: 1.3rem;
       margin-top: 0.5rem;
-      font-weight: 300;
-      border-left: 2px solid #c7c5c1;
-      padding-left: 1.2rem;
     }
 
-    /* ---------- 重磅区：项目经历 (极简卡片/条目) ---------- */
+    /* ---------- 主要项目经验（核心） ---------- */
     .project-grid {
       display: flex;
       flex-direction: column;
-      gap: 2.2rem;
-      margin-top: 1.2rem;
+      gap: 2.5rem;
     }
-
     .project-item {
-      display: flex;
-      flex-direction: column;
-      border-bottom: 1px solid #e0dfdc;
-      padding-bottom: 1.8rem;
+      border-bottom: 1px solid #e6e3df;
+      padding-bottom: 2rem;
+      transition: padding-left 0.2s;
     }
-
+    .project-item:hover {
+      padding-left: 0.3rem; /* 细微动效 */
+    }
     .project-header {
       display: flex;
       flex-wrap: wrap;
@@ -104,348 +95,314 @@
       justify-content: space-between;
       gap: 0.5rem 1rem;
     }
-
     .project-title {
-      font-size: 1.25rem;
+      font-size: 1.4rem;
       font-weight: 400;
       letter-spacing: 0.01em;
     }
-
     .project-year {
       font-size: 0.85rem;
-      font-weight: 300;
-      color: #6b6a67;
+      font-weight: 340;
+      color: #6b6966;
       background: #efeeec;
-      padding: 0.15rem 0.8rem;
+      padding: 0.2rem 1rem;
       border-radius: 30px;
+      white-space: nowrap;
     }
-
     .project-desc {
-      margin-top: 0.5rem;
-      font-size: 0.95rem;
-      color: #2e2d2b;
-      max-width: 720px;
+      margin-top: 0.8rem;
+      font-size: 0.96rem;
+      color: #302f2c;
+      max-width: 760px;
       font-weight: 350;
     }
-
     .project-stack {
-      margin-top: 0.4rem;
-      font-size: 0.85rem;
-      color: #6e6a66;
-      font-weight: 300;
-      letter-spacing: 0.02em;
+      margin-top: 0.7rem;
     }
-
     .project-stack span {
-      background: #f1f0ee;
-      padding: 0.2rem 0.7rem;
-      border-radius: 20px;
+      background: #f1f0ed;
+      padding: 0.3rem 1rem;
+      border-radius: 30px;
       display: inline-block;
-      margin-right: 0.4rem;
+      margin-right: 0.5rem;
       margin-top: 0.3rem;
+      font-size: 0.8rem;
+      color: #3a3734;
     }
-
-    /* 极简占位图 (如果用户没有图片，永远不破坏氛围) */
     .placeholder-img {
-      margin-top: 1rem;
+      margin-top: 1.2rem;
       display: flex;
-      flex-wrap: wrap;
       gap: 1rem;
+      flex-wrap: wrap;
     }
-
     .placeholder-img img {
-      max-width: 180px;
+      max-width: 200px;
+      max-height: 120px;
       width: 100%;
       height: auto;
-      opacity: 0.9;
       border-radius: 4px;
-      border: 1px solid #e6e4e1;
-      background: #eceae7;
+      border: 1px solid #e7e5e2;
+      background: #f1efec;
+      object-fit: cover;
+      opacity: 0.9;
     }
 
-    /* ---------- 次要经历 (紧凑列表) ---------- */
+    /* ---------- 其他项目 / 实验性作品 ---------- */
     .side-projects {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
       gap: 2rem 1.5rem;
-      margin: 1.2rem 0 0.5rem;
+      margin-top: 0.5rem;
     }
-
     .side-card {
-      border: 1px solid #e2dfdb;
-      padding: 1.5rem 1.3rem 1.7rem;
+      border: 1px solid #e5e2de;
       background: #ffffff;
-      border-radius: 2px;
-      transition: box-shadow 0.25s ease;
+      padding: 1.6rem 1.4rem 1.8rem;
+      border-radius: 3px;
+      transition: all 0.18s ease;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.01);
     }
-
     .side-card:hover {
-      box-shadow: 0 2px 12px rgba(0,0,0,0.02), 0 0px 0 1px #d8d5d1;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.02), 0 0 0 1px #d9d6d2;
+      transform: translateY(-2px);
     }
-
-    .side-card h3 {
-      font-weight: 480;
-      font-size: 1.1rem;
-      margin-bottom: 0.35rem;
-    }
-
     .side-card .role {
-      font-size: 0.8rem;
-      color: #7a7875;
-      margin-bottom: 0.6rem;
-      border-bottom: 1px solid #edece9;
+      font-size: 0.82rem;
+      color: #7a7671;
+      border-bottom: 1px solid #efedea;
       padding-bottom: 0.5rem;
-      font-weight: 300;
+      margin-bottom: 1rem;
+      font-weight: 330;
     }
-
     .side-card p {
-      font-size: 0.9rem;
-      color: #3a3937;
-      font-weight: 350;
+      font-size: 0.92rem;
+      color: #2e2c2a;
+      font-weight: 340;
+    }
+    .stack-sm {
+      margin-top: 1rem;
+      font-size: 0.78rem;
+      color: #6e6a65;
+      background: #faf9f7;
+      display: inline-block;
+      padding: 0.2rem 0.7rem;
+      border-radius: 30px;
     }
 
-    .side-card .stack-sm {
-      margin-top: 0.8rem;
-      font-size: 0.75rem;
-      color: #726f6c;
-    }
-
-    /* ---------- 工具 / 关于 ---------- */
-    .about-text {
+    /* 经历摘要 & 联系区 */
+    .exp-summary {
       font-size: 0.97rem;
-      color: #2b2a28;
-      max-width: 700px;
-      font-weight: 320;
-      margin-bottom: 1.2rem;
+      color: #2a2927;
+      max-width: 800px;
+      margin-bottom: 1rem;
+      font-weight: 330;
     }
-
+    .inline-exp {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem 1.8rem;
+      margin-top: 0.6rem;
+    }
+    .inline-exp span {
+      font-size: 0.9rem;
+      color: #3a3835;
+      background: #f7f6f4;
+      padding: 0.4rem 1rem;
+      border-radius: 30px;
+    }
     .contact-meta {
       display: flex;
       flex-wrap: wrap;
-      gap: 1.8rem;
-      margin-top: 1.8rem;
+      gap: 1.4rem 2.5rem;
+      margin-top: 2.5rem;
       padding-top: 1.2rem;
-      border-top: 1px solid #dad8d4;
-      font-size: 0.9rem;
+      border-top: 1px solid #dbd8d4;
     }
-
     .contact-meta span {
-      letter-spacing: 0.02em;
+      font-size: 0.9rem;
+      color: #4c4a47;
     }
 
-    /* 极简 footer */
-    .footer-note {
-      margin-top: 4rem;
-      padding-top: 1.5rem;
+    .footer {
+      margin-top: 4.5rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid #e2dfdb;
       text-align: right;
-      border-top: 1px solid #e1dfdc;
-      color: #7c7975;
       font-size: 0.8rem;
+      color: #8d8984;
       font-weight: 300;
     }
 
-    /* ----- 移动端适配 (极简) ----- */
+    /* 移动端优化 */
     @media (max-width: 600px) {
-      body {
-        padding: 1.2rem 0.8rem 3rem;
-      }
-      h2 {
-        margin-top: 2.2rem;
-      }
-      .contact-meta {
-        gap: 0.8rem 1.2rem;
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .project-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.25rem;
-      }
-      .project-year {
-        align-self: flex-start;
-      }
-      .placeholder-img img {
-        max-width: 100%;
-      }
-    }
-
-    /* 纯原生/极简交互用 JS —— 不引入任何框架 */
-    .small-tip {
-      font-size: 0.8rem;
-      color: #82807c;
-      margin-left: 0.8rem;
-      cursor: default;
+      body { padding: 1.5rem 1rem 3rem; }
+      h2 { margin-top: 2.4rem; }
+      .project-title { font-size: 1.3rem; }
+      .project-header { flex-direction: column; align-items: flex-start; }
+      .project-year { align-self: flex-start; }
+      .placeholder-img img { max-width: 100%; }
+      .inline-exp span { padding: 0.3rem 0.8rem; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    
-    <!-- 头部：突出个人 + 直接聚焦经历 -->
-    <header class="header-minimal">
-      <h1>周 维 · Zhōu Wéi</h1>
-      <div class="header-sub">
-        作品收录 2020–2025 · 前端 / 交互 / 视觉 —— 重視過程與細節。
-      </div>
-    </header>
 
-    <!-- ▼▼ 主要項目經歷 (極簡流線) 最重點顯示 ▼▼ -->
-    <section>
-      <h2>👨‍💻 主項目經歷</h2>
-      <div class="project-grid" id="featured-projects">
-        <!-- 项目1 -->
-        <article class="project-item">
-          <div class="project-header">
-            <span class="project-title">邊界 · 設計系統</span>
-            <span class="project-year">2024 – 至今</span>
-          </div>
-          <p class="project-desc">
-            為跨國團隊建立無障礙設計規範，組件庫覆蓋 30+ 核心元素，並撰寫實用文檔。推動 web 性能與可訪問性標準，減少 38% UI 重工。
-          </p>
-          <div class="project-stack">
-            <span>React</span><span>TypeScript</span><span>Figma API</span><span>Storybook</span>
-          </div>
-          <!-- 极简占位图，说明项目影像 -->
-          <div class="placeholder-img">
-            <img src="https://picsum.photos/400/220?random=1" alt="设计系统示意封面">
-          </div>
-        </article>
+  <!-- 极简头部 -->
+  <header class="hero">
+    <h1>欧阳奇 · Ouyang Qi</h1>
+    <div class="hero-sub">
+      独立开发者 · 前端方向 ———— 我重视构建清晰、有温度的界面，并执着于每一个项目背后的问题与解法。
+    </div>
+  </header>
 
-        <!-- 项目2 —— 重新设计 -->
-        <article class="project-item">
-          <div class="project-header">
-            <span class="project-title">氣象可視化平台</span>
-            <span class="project-year">2023 – 2024</span>
-          </div>
-          <p class="project-desc">
-            為主機最多、資料流複雜的氣象部門打造即時圖表。透過 WebGL 與 Canvas 混用，讓雷達資料加載速度提升 60%，並強化真實性分析。
-          </p>
-          <div class="project-stack">
-            <span>D3.js</span><span>WebGL</span><span>Mapbox</span>
-          </div>
-          <div class="placeholder-img">
-            <img src="https://picsum.photos/400/220?random=2" alt="数据可视化界面预演">
-          </div>
-        </article>
+  <!-- ▼▼ 核心: 主要项目经历 ▼▼ -->
+  <section>
+    <h2>▼ 主要项目经历</h2>
+    <div class="project-grid">
 
-        <!-- 项目3 -->
-        <article class="project-item">
-          <div class="project-header">
-            <span class="project-title">開源任務管理 · Peregrine</span>
-            <span class="project-year">2022 – 2023</span>
-          </div>
-          <p class="project-desc">
-            高可自訂的任務看板，鍵盤操作與 markdown 快捷編輯。社群 1.2k star，每月活躍下載超過 9k。專注極簡體驗。
-          </p>
-          <div class="project-stack">
-            <span>Vue 3</span><span>Pinia</span><span>Tailwind (概念)</span><span>IndexedDB</span>
-          </div>
-          <div class="placeholder-img">
-            <img src="https://picsum.photos/400/220?random=3" alt="任务管理工具屏幕">
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <!-- ▼ 其它項目經歷 / 側邊精選 -->
-    <section>
-      <h2>📁 更多項目與實驗</h2>
-      <div class="side-projects" id="side-projects">
-        <!-- 小型侧面项目卡片 -->
-        <div class="side-card">
-          <h3>音流・陪伴白噪音</h3>
-          <div class="role">概念開發 / 個人項目</div>
-          <p>在瀏覽器內即時合成環境音，使用 Web Audio API，支援離線 PWA。</p>
-          <div class="stack-sm">JavaScript · 音訊處理</div>
+      <!-- 项目一 -->
+      <article class="project-item">
+        <div class="project-header">
+          <span class="project-title">端侧智能 · 手势解释器</span>
+          <span class="project-year">2024 – 今</span>
         </div>
-        <div class="side-card">
-          <h3>文字排版實驗室</h3>
-          <div class="role">實驗 · 前端研究</div>
-          <p>探索中英混排的微觀排版，以及字體可讀性量化；參數驅動 CSS 產生版式。</p>
-          <div class="stack-sm">CSS · 字體光學</div>
+        <p class="project-desc">
+          基于 Web 的实时手势感知系统，为无障碍场景提供免触屏人机交互。结合 MediaPipe 与自研滤波算法，使识别延迟低于 50ms。落地于数字博物馆导览中。
+        </p>
+        <div class="project-stack">
+          <span>JavaScript</span><span>MediaPipe</span><span>Canvas</span><span>WebGL</span>
         </div>
-        <div class="side-card">
-          <h3>極簡幾何生成器</h3>
-          <div class="role">ACM / 視覺程式</div>
-          <p>生成 SVG 幾何圖形，輸出紋理與海報。支援亂數種子與導出PNG。</p>
-          <div class="stack-sm">SVG · Canvas</div>
+        <div class="placeholder-img">
+          <img src="https://picsum.photos/500/240?random=10" alt="手势识别界面示意">
         </div>
-        <div class="side-card">
-          <h3>簡報腳本輔助</h3>
-          <div class="role">黑客松作品</div>
-          <p>講者即時提詞與時間偵測；使用語音轉文字標註重點，奪得最佳工具獎。</p>
-          <div class="stack-sm">MediaRecorder</div>
+      </article>
+
+      <!-- 项目二 -->
+      <article class="project-item">
+        <div class="project-header">
+          <span class="project-title">响应式极简仪表盘</span>
+          <span class="project-year">2023 – 2024</span>
         </div>
+        <p class="project-desc">
+          开源的智能家居数据面板。支持暗色主题、模块自定义，通过 CSS Grid 实现高自由度布局。被两百余个家庭用户长期使用，并获得 800+ star。
+        </p>
+        <div class="project-stack">
+          <span>TypeScript</span><span>Vue</span><span>CSS Grid</span><span>WebSocket</span>
+        </div>
+        <div class="placeholder-img">
+          <img src="https://picsum.photos/500/240?random=11" alt="仪表盘暗色界面效果">
+        </div>
+      </article>
+
+      <!-- 项目三 -->
+      <article class="project-item">
+        <div class="project-header">
+          <span class="project-title">文本情愫 · 阅读分析与生成</span>
+          <span class="project-year">2022 – 2023</span>
+        </div>
+        <p class="project-desc">
+          面向中文长文的情感可视化实验工具，利用 NLP 进行段落级情感预测。包含简洁的文本渲染和情感光谱图。该项目被用于数字人文课题研究。
+        </p>
+        <div class="project-stack">
+          <span>React</span><span>D3.js</span><span>NLP (client)</span>
+        </div>
+        <div class="placeholder-img">
+          <img src="https://picsum.photos/500/240?random=12" alt="情感光谱图预览">
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ▼ 其它精选项目 / 实验经历 ▼ -->
+  <section>
+    <h2>✳ 其他实践与探索</h2>
+    <div class="side-projects">
+      <div class="side-card">
+        <h3>光影 · 室内动效</h3>
+        <div class="role">个人视觉研究</div>
+        <p>通过 three.js 实现光照模拟，并由 LUT 调色。作品被多个设计博客收录。</p>
+        <span class="stack-sm">WebGL · 3D</span>
       </div>
-    </section>
-
-    <!-- 簡短關於 / 經歷摘要（強化“項目經歷”主題） -->
-    <section>
-      <h2>🔍 經歷摘要</h2>
-      <p class="about-text">
-        五年專注在產品級前端架構與設計實作。從小型新創到大型團隊，擅長把模糊需求轉為直覺介面。
-        以下經驗來自與哈佛醫學院合作案、Mozilla 開放社群以及本土新創。底層信念：設計是溝通的框架，代碼是框架的載體。
-      </p>
-
-      <!-- 紧凑经历列表 (无照片，文字极简) -->
-      <div style="display: flex; flex-wrap: wrap; gap: 1rem 2rem; margin-top: 0.8rem;">
-        <span style="font-weight: 350; font-size: 0.95rem;">🔹 資深前端 · 新芽設計 (2021-2022)</span>
-        <span style="font-weight: 350; font-size: 0.95rem;">🔹 合約開發 · 資料視覺 (2023)</span>
-        <span style="font-weight: 350; font-size: 0.95rem;">🔹 開源維護者 (2023-2025)</span>
+      <div class="side-card">
+        <h3>文献书签协作</h3>
+        <div class="role">研究生项目</div>
+        <p>轻量浏览器插件，支持跨设备共享批注。基于 IndexedDB 和 CRDT 合并算法。</p>
+        <span class="stack-sm">浏览器扩展</span>
       </div>
-
-      <!-- 联系/代碼 (極簡) -->
-      <div class="contact-meta">
-        <span>✉️ hello@zwei.work</span>
-        <span>🌐 github.com/zwei-design</span>
-        <span>📍 台灣／台北</span>
-        <span id="dynamic-time" style="color:#6f6c68;">—</span>
+      <div class="side-card">
+        <h3>生成艺术海报</h3>
+        <div class="role">设计编程</div>
+        <p>用原生 JS 生成随机矢量海报，可导出SVG、PNG。字体使用系统字体，克制美学。</p>
+        <span class="stack-sm">Canvas · 算法</span>
       </div>
-    </section>
+      <div class="side-card">
+        <h3>会议效率工具</h3>
+        <div class="role">黑客松作品</div>
+        <p>语音识别 + 实时摘要界面，快速提炼行动项。获得最佳创意奖与技术提名。</p>
+        <span class="stack-sm">Web API · 语音</span>
+      </div>
+    </div>
+  </section>
 
-    <div class="footer-note">
-      ● 每一項經歷都是長久打磨 — 作品集 2025
+  <!-- 经历摘要 / 技能标签 -->
+  <section>
+    <h2>◆ 技术与经历概览</h2>
+    <p class="exp-summary">
+      近五年集中在产品级前端开发与交互细节。我相信克制是最好的装饰 —— 内容比效果優先，结构性代码能走得更远。除产品工作外，也持续在开源项目与数字艺术领域保持探索。
+    </p>
+    <div class="inline-exp">
+      <span>▻ 核心：TypeScript / React / Vue</span>
+      <span>▻ 视觉：CSS 动效、Canvas</span>
+      <span>▻ 其他：Node.js / 协同编辑</span>
     </div>
 
-  </div>
+    <div class="contact-meta">
+      <span>✉️ 邮箱：qi.ouyang@hello.dev</span>
+      <span>🖥 代码：github.com/ouyangqi</span>
+      <span>📐 城市：上海 / 远程</span>
+      <span id="live-clock">— 今日 · 此刻</span>
+    </div>
+  </section>
 
-  <!-- 原生 JS：極簡交互，顯示目前本地時間、以及項目卡片小巧互動 (沒有引入任何資源) -->
+  <footer class="footer">
+    极简集 · 作品与项目经历 — 全部用原生代码构建
+  </footer>
+
+  <!-- 原声JavaScript：小交互/时钟/卡片提示（毫不喧宾） -->
   <script>
     (function() {
-      // 極簡動態年份/目前時間 (更新 footer 旁)
-      const timeElement = document.getElementById('dynamic-time');
-      if (timeElement) {
-        const updateTime = () => {
+      // 刷新本地时钟 (最小化显示)
+      const clockElement = document.getElementById('live-clock');
+      if (clockElement) {
+        const updateClock = () => {
           const now = new Date();
-          const dateStr = now.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' });
-          const timeStr = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
-          timeElement.textContent = `📅 ${dateStr} ${timeStr}`;
+          const month = now.toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' });
+          const time = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+          clockElement.textContent = `🕒 ${month} ${time}`;
         };
-        updateTime();
-        setInterval(updateTime, 30000); // 每30秒更新一次即可
+        updateClock();
+        setInterval(updateClock, 30000);
       }
 
-      // 加一些極簡卡片交互感：點擊主要項目時，顯示簡短額外說明(原生)
-      const projectItems = document.querySelectorAll('.project-item');
-      projectItems.forEach((item) => {
+      // 为每个主要项目卡片增加点击信息提示 (强化互动但不干扰)
+      const mainItems = document.querySelectorAll('.project-item');
+      mainItems.forEach(item => {
         item.addEventListener('click', function(e) {
-          // 避免點到連結跳轉 (我們沒有href)
-          if (e.target.tagName === 'IMG' || e.target.tagName === 'A') return;
-          const titleElem = this.querySelector('.project-title');
-          if (!titleElem) return;
-          const say = titleElem.innerText.trim();
-          alert('查看「' + say + '」更多詳細說明 ? 可連絡信箱索取完整個案。');
+          // 如果点到了图片或内部链接，不弹提示
+          if (e.target.tagName === 'IMG' || e.target.closest('a')) return;
+          const titleEl = this.querySelector('.project-title');
+          if (titleEl) {
+            const name = titleEl.innerText.replace(/\s+/g, ' ').trim();
+            alert(`「${name}」完整项目档案可邮件获取。`);
+          }
         });
       });
 
-      // 側邊卡片hover沒有複雜行為，但加一個小工具 (僅打console或更新子標題) 
-      // 此處只做輔助說明；最低調
+      // 侧边卡片hover 微调 (加一点点视觉反馈，但不破坏风格)
       const sideCards = document.querySelectorAll('.side-card');
       sideCards.forEach(card => {
         card.addEventListener('mouseenter', () => {
-          // 極簡 : 增加一點透明度變化，透過style (但避免重繪太多只改變底色)
-          card.style.backgroundColor = '#fefefe';
+          card.style.backgroundColor = '#fdfdfc';
         });
         card.addEventListener('mouseleave', () => {
           card.style.backgroundColor = '#ffffff';
@@ -453,6 +410,5 @@
       });
     })();
   </script>
-  <!-- 完美一個 HTML 檔，完全自包含，無任何外部資源除了picsum圖片 (按要求提供的佔位) 及字體皆為系統 -->
 </body>
 </html>

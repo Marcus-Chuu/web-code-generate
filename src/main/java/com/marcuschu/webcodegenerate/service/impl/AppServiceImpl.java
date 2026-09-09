@@ -9,6 +9,7 @@ import com.marcuschu.webcodegenerate.ai.AiCodeGenTypeRoutingService;
 import com.marcuschu.webcodegenerate.ai.AiCodeGenTypeRoutingServiceFactory;
 import com.marcuschu.webcodegenerate.ai.core.AiCodeGeneratorFacade;
 import com.marcuschu.webcodegenerate.ai.core.builder.VueProjectBuilder;
+import com.marcuschu.webcodegenerate.ai.core.streamHandler.SimpleTextStreamHandler;
 import com.marcuschu.webcodegenerate.ai.core.streamHandler.StreamHandlerExecutor;
 import com.marcuschu.webcodegenerate.constant.AppConstant;
 import com.marcuschu.webcodegenerate.exception.BusinessException;
@@ -108,9 +109,9 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App>  implements AppS
 
 
     /**
-     * 部署地址
+     * 部署地址(与 application.yml 中 app.deploy.base-url 对应)
      */
-    @Value("${code.deploy-host:http://localhost}")
+    @Value("${app.deploy.base-url:http://localhost:8123/api/static}")
     private String deployHost;
 
 
@@ -306,9 +307,11 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App>  implements AppS
             Flux<String> codeStream = agent
                     ? new CodeGenWorkflow().executeWorkflowWithFlux(message, appId)
                     : aiCodeGeneratorFacade.generateAndSaveCodeStream(message, codeGenTypeEnum, appId);
-            return MonitorContextHolder.bind(
-                    streamHandlerExecutor.doExecute(codeStream, chatHistoryService, appId, loginUser, codeGenTypeEnum),
-                    monitorContext);
+            // 工作流模式产出的是 SSE 事件帧, 应原样透传并由前端解析; 普通模式才按代码生成类型选择处理器
+            Flux<String> handledStream = agent
+                    ? new SimpleTextStreamHandler().handle(codeStream, chatHistoryService, appId, loginUser)
+                    : streamHandlerExecutor.doExecute(codeStream, chatHistoryService, appId, loginUser, codeGenTypeEnum);
+            return MonitorContextHolder.bind(handledStream, monitorContext);
         }
     }
 

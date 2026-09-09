@@ -131,7 +131,7 @@ public class CodeGenWorkflow {
     public Flux<String> executeWorkflowWithFlux(String originalPrompt, Long appId) {
         MonitorContext monitorContext = MonitorContextHolder.capture();
         return Flux.create(sink -> {
-            Thread.startVirtualThread(() -> {
+            Thread workflowThread = Thread.ofVirtual().unstarted(() -> {
                 try (MonitorContextHolder.Scope ignored = MonitorContextHolder.open(monitorContext)) {
                     CompiledGraph<MessagesState<String>> workflow = createWorkflow();
                     WorkflowContext initialContext = WorkflowContext.builder()
@@ -149,6 +149,11 @@ public class CodeGenWorkflow {
                     int stepCounter = 1;
                     for (NodeOutput<MessagesState<String>> step : workflow.stream(
                             Map.of(WorkflowContext.WORKFLOW_CONTEXT_KEY, initialContext))) {
+                        // 下游已取消(客户端断开或流已出错), 立即中止, 避免后台继续运行
+                        if (sink.isCancelled()) {
+                            log.warn("下游已取消, 中止代码生成工作流 (已执行 {} 步)", stepCounter - 1);
+                            break;
+                        }
                         log.info("--- 第 {} 步完成 ---", stepCounter);
                         WorkflowContext currentContext = WorkflowContext.getContext(step.state());
                         if (currentContext != null) {
@@ -160,12 +165,19 @@ public class CodeGenWorkflow {
                         }
                         stepCounter++;
                     }
+                    if (sink.isCancelled()) {
+                        return;
+                    }
                     sink.next(formatSseEvent("workflow_completed", Map.of(
                             "message", "代码生成工作流执行完成！"
                     )));
                     log.info("代码生成工作流执行完成！");
                     sink.complete();
                 } catch (Exception e) {
+                    if (sink.isCancelled()) {
+                        log.info("工作流因下游取消而中止: {}", e.getMessage());
+                        return;
+                    }
                     log.error("工作流执行失败: {}", e.getMessage(), e);
                     sink.next(formatSseEvent("workflow_error", Map.of(
                             "error", e.getMessage(),
@@ -174,6 +186,12 @@ public class CodeGenWorkflow {
                     sink.error(e);
                 }
             });
+            // 下游取消或客户端断开时, 中断工作流线程, 防止其在后台继续运行
+            sink.onCancel(() -> {
+                log.warn("客户端断开或流已取消, 中断工作流线程");
+                workflowThread.interrupt();
+            });
+            workflowThread.start();
         });
     }
 
@@ -207,7 +225,7 @@ public class CodeGenWorkflow {
     public SseEmitter executeWorkflowWithSse(String originalPrompt) {
         MonitorContext monitorContext = MonitorContextHolder.capture();
         SseEmitter emitter = new SseEmitter(30 * 60 * 1000L);
-        Thread.startVirtualThread(() -> {
+        Thread workflowThread = Thread.ofVirtual().unstarted(() -> {
             try (MonitorContextHolder.Scope ignored = MonitorContextHolder.open(monitorContext)) {
                 CompiledGraph<MessagesState<String>> workflow = createWorkflow();
                 WorkflowContext initialContext = WorkflowContext.builder()
@@ -224,6 +242,11 @@ public class CodeGenWorkflow {
                 int stepCounter = 1;
                 for (NodeOutput<MessagesState<String>> step : workflow.stream(
                         Map.of(WorkflowContext.WORKFLOW_CONTEXT_KEY, initialContext))) {
+                    // 连接已断开, 立即中止, 避免后台继续运行
+                    if (Thread.currentThread().isInterrupted()) {
+                        log.warn("SSE 连接已断开, 中止代码生成工作流 (已执行 {} 步)", stepCounter - 1);
+                        break;
+                    }
                     log.info("--- 第 {} 步完成 ---", stepCounter);
                     WorkflowContext currentContext = WorkflowContext.getContext(step.state());
                     if (currentContext != null) {
@@ -235,12 +258,19 @@ public class CodeGenWorkflow {
                     }
                     stepCounter++;
                 }
+                if (Thread.currentThread().isInterrupted()) {
+                    return;
+                }
                 sendSseEvent(emitter, "workflow_completed", Map.of(
                         "message", "代码生成工作流执行完成！"
                 ));
                 log.info("代码生成工作流执行完成！");
                 emitter.complete();
             } catch (Exception e) {
+                if (Thread.currentThread().isInterrupted()) {
+                    log.info("工作流因连接断开而中止: {}", e.getMessage());
+                    return;
+                }
                 log.error("工作流执行失败: {}", e.getMessage(), e);
                 sendSseEvent(emitter, "workflow_error", Map.of(
                         "error", e.getMessage(),
@@ -249,6 +279,10 @@ public class CodeGenWorkflow {
                 emitter.completeWithError(e);
             }
         });
+        // 连接断开或超时时中断工作流线程, 防止其在后台继续运行
+        emitter.onCompletion(workflowThread::interrupt);
+        emitter.onTimeout(workflowThread::interrupt);
+        workflowThread.start();
         return emitter;
     }
 

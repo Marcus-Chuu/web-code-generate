@@ -2,7 +2,7 @@ package com.marcuschu.webcodegenerate.monitor;
 
 import reactor.core.publisher.Flux;
 
-/** 同线程内访问监控上下文；跨线程传递快照，在执行期间恢复。 */
+/** 同线程内访问监控上下文 : 跨线程传递快照，在执行期间恢复。 */
 public final class MonitorContextHolder {
     private static final ThreadLocal<MonitorContext> CONTEXT_HOLDER = new ThreadLocal<>();
 

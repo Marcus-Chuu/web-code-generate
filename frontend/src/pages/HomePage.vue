@@ -2,7 +2,15 @@
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { message } from 'ant-design-vue'
-import { ArrowRightOutlined, BulbOutlined, CodeOutlined, RocketOutlined } from '@ant-design/icons-vue'
+import {
+  ArrowRightOutlined,
+  BulbOutlined,
+  CodeOutlined,
+  RocketOutlined,
+  CheckOutlined,
+  ThunderboltOutlined,
+  PlusOutlined,
+} from '@ant-design/icons-vue'
 import AppCard from '@/components/AppCard.vue'
 import { appService } from '@/api/services'
 import { apiErrorMessage } from '@/api/client'
@@ -18,21 +26,34 @@ const agentMode = ref(false)
 const creating = ref(false)
 const loading = ref(false)
 const featured = ref<AppVO[]>([])
-const examples = ['做一个极简风个人作品集，突出项目经历', '生成一个咖啡品牌落地页，暖色调并带商品卡片', '设计一个 SaaS 数据分析后台首页']
+const examples = [
+  '做一个极简风个人作品集，突出项目经历',
+  '生成一个咖啡品牌落地页，暖色调并带商品卡片',
+  '设计一个 SaaS 数据分析后台首页',
+]
 
 const createApp = async () => {
   const value = prompt.value.trim()
   if (!value) return message.warning('先描述一下你想创建的页面')
   if (!userStore.isLoggedIn) {
-    await router.push({ path: '/user/login', query: { redirect: '/', prompt: value, agent: agentMode.value ? '1' : '0' } })
+    await router.push({
+      path: '/user/login',
+      query: { redirect: '/', prompt: value, agent: agentMode.value ? '1' : '0' },
+    })
     return
   }
   creating.value = true
   try {
     const id = await appService.create(value)
-    await router.push({ path: `/app/chat/${id}`, query: { start: '1', agent: agentMode.value ? '1' : '0' } })
-  } catch (error) { message.error(apiErrorMessage(error, '创建应用失败')) }
-  finally { creating.value = false }
+    await router.push({
+      path: `/app/chat/${id}`,
+      query: { start: '1', agent: agentMode.value ? '1' : '0' },
+    })
+  } catch (error) {
+    message.error(apiErrorMessage(error, '创建应用失败'))
+  } finally {
+    creating.value = false
+  }
 }
 
 const openPreview = (app: AppVO) => {
@@ -49,100 +70,747 @@ onMounted(async () => {
   }
   loading.value = true
   try {
-    const page = await appService.listFeatured({ pageNum: 1, pageSize: 8, sortField: 'priority', sortOrder: 'descend' })
+    const page = await appService.listFeatured({
+      pageNum: 1,
+      pageSize: 8,
+      sortField: 'priority',
+      sortOrder: 'descend',
+    })
     featured.value = page.records || []
-  } catch (error) { message.error(apiErrorMessage(error, '精选应用加载失败')) }
-  finally { loading.value = false }
+  } catch (error) {
+    message.error(apiErrorMessage(error, '精选应用加载失败'))
+  } finally {
+    loading.value = false
+  }
 })
 </script>
 
 <template>
-  <main>
+  <main class="home-page">
     <section class="hero">
-      <div class="hero-orb orb-one"></div><div class="hero-orb orb-two"></div>
       <div class="page-shell hero-inner">
         <div class="hero-copy">
-          <span class="eyebrow">AI Website Builder</span>
+          <span class="hero-badge"><span></span> 让好想法，自由生长 <ArrowRightOutlined /></span>
           <h1>
-            <span>说出灵感，</span>
-            <span class="title-second-line"><em>编织</em>成真实页面。</span>
+            你的下一件作品，<br />
+            <span>从<em>一个想法</em>开始。</span>
           </h1>
-          <p>无需从空白画布开始。用自然语言描述产品，AI 会实时生成代码、展示预览，并随你的反馈持续迭代。</p>
+          <p>
+            把灵感交给 AI，让创作变得简单。<br class="mobile-break" />
+            描述、生成、发布，让想法跃然眼前。
+          </p>
           <div class="idea-input surface">
-            <textarea v-model="prompt" maxlength="1000" placeholder="例如：为一家独立咖啡店设计一个有故事感的品牌官网……" @keydown.ctrl.enter.prevent="createApp"></textarea>
+            <div class="composer-heading">
+              <ThunderboltOutlined /><span>今天，你想创造什么？</span
+              ><span class="composer-label">灵感画布</span>
+            </div>
+            <textarea
+              v-model="prompt"
+              aria-label="描述你想创建的页面"
+              maxlength="1000"
+              placeholder="例如：为一家独立咖啡店设计一个温暖、有故事感的品牌官网……"
+              @keydown.ctrl.enter.prevent="createApp"
+            ></textarea>
             <div class="input-actions">
               <div class="generation-options">
-                <label title="使用 LangGraph4j 多步骤规划、生成和质量检查">
+                <label title="开启后，AI 将分步骤规划、生成并检查页面质量">
                   <a-switch v-model:checked="agentMode" size="small" />
                   <span>工作流模式</span>
                 </label>
-                <span>Ctrl + Enter 发送</span>
+                <span class="shortcut"><kbd>Ctrl</kbd> + <kbd>Enter</kbd></span>
               </div>
-              <a-button type="primary" size="large" :loading="creating" @click="createApp">开始生成 <ArrowRightOutlined /></a-button>
+              <a-button type="primary" size="large" :loading="creating" @click="createApp"
+                >开始创作 <ArrowRightOutlined
+              /></a-button>
             </div>
           </div>
           <div class="examples">
-            <span>试试：</span><button v-for="item in examples" :key="item" @click="prompt = item">{{ item }}</button>
+            <span>找点灵感</span
+            ><button
+              v-for="(item, index) in examples"
+              :key="item"
+              :title="item"
+              @click="prompt = item"
+            >
+              <PlusOutlined />{{ ['个人作品集', '咖啡品牌官网', '数据分析后台'][index] }}
+            </button>
           </div>
         </div>
-        <div class="hero-visual" aria-hidden="true">
-          <div class="browser-card">
-            <div class="browser-top"><i></i><i></i><i></i><span>your-idea.app</span></div>
-            <div class="mock-nav"></div><div class="mock-title"></div><div class="mock-text"></div>
-            <div class="mock-grid"><i></i><i></i><i></i></div>
+        <div class="inspiration-card" aria-hidden="true">
+          <div class="mini-browser"><i></i><i></i><i></i><span>little moments</span></div>
+          <div class="mini-poster">
+            <span>THE SLOW STUDIO</span><strong>Less, but<br /><em>better.</em></strong>
+            <div class="leaf-art"><i></i><i></i><i></i></div>
+            <span class="poster-caption">留一点空间，给生活。</span>
           </div>
-          <span class="float-label label-ai">AI 正在构建 ···</span>
-          <span class="float-label label-code">&lt;/&gt; Vue</span>
+          <div class="mini-caption"><span class="tiny-dot"></span> 一点灵感，无限可能</div>
+        </div>
+        <div class="build-card" aria-hidden="true">
+          <div class="build-heading"><CodeOutlined /><span>想法正在成形</span><i></i></div>
+          <div class="code-lines">
+            <span>&lt;<b>your-idea</b>&gt;</span><span>&nbsp; creativity: <em>∞</em>;</span
+            ><span>&nbsp; possibilities: <em>endless</em>;</span
+            ><span>&lt;/<b>your-idea</b>&gt;</span>
+          </div>
+          <div class="build-preview">
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+          <div class="build-status">
+            <span><CheckOutlined /> 让灵感成为现实</span><span>100%</span>
+          </div>
         </div>
       </div>
     </section>
 
     <section class="steps page-shell">
-      <div><BulbOutlined /><b>描述想法</b><span>一句话定义页面目标与风格</span></div>
-      <i></i><div><CodeOutlined /><b>实时生成</b><span>像打字一样看见代码构建过程</span></div>
-      <i></i><div><RocketOutlined /><b>发布使用</b><span>一键部署并下载完整源代码</span></div>
+      <div class="step">
+        <span class="step-icon"><BulbOutlined /></span>
+        <div>
+          <b>描述你的想法</b>
+          <p>一句话，勾勒心中的理想页面</p>
+        </div>
+        <span class="step-number">01</span>
+      </div>
+      <div class="step">
+        <span class="step-icon"><CodeOutlined /></span>
+        <div>
+          <b>看着灵感成形</b>
+          <p>实时生成代码，随时对话调整</p>
+        </div>
+        <span class="step-number">02</span>
+      </div>
+      <div class="step">
+        <span class="step-icon"><RocketOutlined /></span>
+        <div>
+          <b>把作品分享给世界</b>
+          <p>一键部署上线，完整源码随心用</p>
+        </div>
+        <span class="step-number">03</span>
+      </div>
     </section>
 
     <section class="page-shell page-section showcase">
-      <div class="section-heading"><div><span class="eyebrow">Community Picks</span><h2>本周精选灵感</h2></div><p class="page-description">看看其他创作者最近完成了什么</p></div>
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">MADE WITH 灵构</span>
+          <h2>好想法，值得被看见<span class="heading-dot">.</span></h2>
+          <p class="page-description">探索社区精选作品，遇见你的下一个灵感。</p>
+        </div>
+        <span class="collection-note"><span></span> 创意在这里持续生长</span>
+      </div>
       <a-skeleton v-if="loading" active :paragraph="{ rows: 8 }" />
       <div v-else-if="featured.length" class="app-grid">
-        <AppCard v-for="app in featured" :key="String(app.id)" :app="app" show-author @open="router.push(`/app/chat/${$event.id}`)" @preview="openPreview" />
+        <AppCard
+          v-for="app in featured"
+          :key="String(app.id)"
+          :app="app"
+          show-author
+          @open="router.push(`/app/chat/${$event.id}`)"
+          @preview="openPreview"
+        />
       </div>
-      <div v-else class="surface empty-state">还没有精选应用，成为第一个创作者吧。</div>
+      <div v-else class="surface empty-state">
+        <BulbOutlined class="empty-icon" />
+        <h3>下一个好作品，也许就是你的</h3>
+        <p>这里将展示社区精选作品，从上方输入你的第一个想法吧。</p>
+      </div>
     </section>
   </main>
 </template>
 
 <style scoped>
-.hero { position: relative; overflow: hidden; padding: 84px 0 76px; background: #f6f6f2; }
-.hero-inner { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0,1.08fr) minmax(360px,.92fr); align-items: center; gap: 64px; }
-.hero-copy h1 { display: grid; gap: 10px; margin: 18px 0 32px; font-size: clamp(46px,5.25vw,70px); line-height: 1.1; letter-spacing: -.055em; }
-.hero-copy h1 span { display: block; width: fit-content; white-space: nowrap; }
-.hero-copy h1 .title-second-line { position: relative; padding-bottom: 4px; }
-.hero-copy h1 .title-second-line::after { content: ''; position: absolute; right: 1%; bottom: -3px; left: 0; height: 7px; background: linear-gradient(90deg,rgba(101,88,245,.2),rgba(101,88,245,0)); border-radius: 10px; }
-.hero-copy h1 em { position: relative; z-index: 1; color: #6558f5; font-style: normal; }
-.hero-copy > p { max-width: 600px; margin: 0; color: #687083; font-size: 17px; line-height: 1.9; }
-.idea-input { margin-top: 30px; padding: 10px; }
-textarea { display: block; width: 100%; min-height: 100px; padding: 14px; resize: none; color: #263047; font-size: 15px; line-height: 1.7; background: transparent; border: 0; outline: 0; }
-.input-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 6px 6px 4px 14px; border-top: 1px solid #ededeb; }
-.generation-options { display: flex; align-items: center; gap: 16px; color: #9a9fac; font-size: 11px; }
-.generation-options label { display: flex; align-items: center; gap: 7px; color: #555d6f; cursor: pointer; }
-.generation-options :deep(.ant-switch-checked) { background: #6558f5; }
-.examples { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; color: #858b98; font-size: 11px; }
-.examples button { max-width: 200px; overflow: hidden; padding: 4px 8px; color: #686f7e; text-overflow: ellipsis; white-space: nowrap; background: #ecece7; border: 0; border-radius: 6px; cursor: pointer; }
-.hero-visual { position: relative; min-height: 440px; }
-.browser-card { position: absolute; inset: 26px 0 30px 24px; padding: 58px 34px 34px; background: white; border: 1px solid rgba(23,29,43,.1); border-radius: 22px; box-shadow: 0 38px 80px rgba(38,42,65,.18); transform: rotate(2deg); }
-.browser-top { position: absolute; top: 0; left: 0; right: 0; height: 42px; display: flex; align-items: center; gap: 6px; padding: 0 14px; background: #eeeef0; border-radius: 22px 22px 0 0; }
-.browser-top i { width: 7px; height: 7px; background: #bbbcc3; border-radius: 50%; }.browser-top span { margin: auto; padding: 5px 54px; color: #8e919b; font-size: 9px; background: white; border-radius: 20px; }
-.mock-nav { width: 100%; height: 14px; margin-bottom: 70px; background: linear-gradient(90deg,#23283a 0 20%,transparent 20% 67%,#dfe0e5 67% 100%); }
-.mock-title { width: 70%; height: 32px; background: #242a3c; border-radius: 5px; }.mock-text { width: 85%; height: 12px; margin-top: 17px; background: #d8d9df; border-radius: 4px; }
-.mock-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-top: 58px; }.mock-grid i { height: 105px; background: linear-gradient(145deg,#edecff,#cbd5ff); border-radius: 10px; }.mock-grid i:nth-child(2){background:linear-gradient(145deg,#d8f8ec,#b5e4d4)}.mock-grid i:nth-child(3){background:linear-gradient(145deg,#ffeacb,#f5c795)}
-.float-label { position: absolute; padding: 10px 14px; color: white; font-size: 11px; font-weight: 700; background: #1c2231; border-radius: 10px; box-shadow: 0 12px 30px rgba(31,36,54,.22); }.label-ai { right: -15px; bottom: 54px; }.label-code { top: 4px; left: 0; color: #4d43d3; background: #eeecff; }
-.hero-orb { position: absolute; border-radius: 50%; filter: blur(1px); }.orb-one { width: 420px; height: 420px; right: -170px; top: -220px; background: #e6e1ff; }.orb-two { width: 250px; height: 250px; left: -120px; bottom: -150px; background: #d7f5e9; }
-.steps { position: relative; z-index: 2; display: grid; grid-template-columns: 1fr 50px 1fr 50px 1fr; gap: 22px; margin-top: -20px; padding: 24px 34px; background: #181e2b; border-radius: 18px; box-shadow: 0 18px 50px rgba(24,30,43,.18); }
-.steps div { display: grid; grid-template-columns: 32px 1fr; align-items: center; color: #887cff; }.steps b { color: white; font-size: 14px; }.steps span { grid-column: 2; margin-top: 4px; color: #969dab; font-size: 11px; }.steps > i { align-self: center; height: 1px; background: #343a48; }
-.showcase { padding-top: 74px; }.app-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 20px; }
-@media(max-width:1000px){.hero-inner{grid-template-columns:1fr}.hero-visual{display:none}.app-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:680px){.hero{padding:52px 0}.hero-copy h1{gap:8px;margin:16px 0 26px;font-size:clamp(37px,11.5vw,48px);line-height:1.12;letter-spacing:-.05em}.hero-copy>p{font-size:15px;line-height:1.8}.steps{grid-template-columns:1fr}.steps>i{display:none}.app-grid{grid-template-columns:1fr}.generation-options>span{display:none}}
+.home-page {
+  overflow: hidden;
+}
+.hero {
+  position: relative;
+  padding: 66px 0 42px;
+  background: radial-gradient(ellipse at 50% 42%, #eaf2e780, transparent 65%);
+}
+.hero-inner {
+  position: relative;
+}
+.hero-copy {
+  position: relative;
+  z-index: 2;
+  max-width: 744px;
+  margin: auto;
+  text-align: center;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 13px;
+  border: 1px solid #dce6dc;
+  border-radius: 30px;
+  background: #f0f5ed;
+  color: #53715e;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+.hero-badge > span:first-child {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #749b77;
+}
+.hero-badge > .anticon {
+  font-size: 11px;
+}
+.hero-copy h1 {
+  margin: 24px 0 20px;
+  color: #263d32;
+  font-size: clamp(38px, 4.3vw, 60px);
+  font-weight: 650;
+  line-height: 1.35;
+  letter-spacing: -0.045em;
+}
+.hero-copy h1 em {
+  position: relative;
+  color: #65856a;
+  font-style: normal;
+}
+.hero-copy h1 em::after {
+  content: '';
+  position: absolute;
+  bottom: 1px;
+  left: 2px;
+  right: 2px;
+  height: 7px;
+  border-radius: 50%;
+  border-top: 2px solid #9eb891;
+  transform: rotate(-3deg);
+}
+.hero-copy > p {
+  margin: 0;
+  color: #7a8279;
+  font-size: 15px;
+  line-height: 1.9;
+}
+.mobile-break {
+  display: none;
+}
+.idea-input {
+  margin-top: 30px;
+  padding: 21px 22px 15px;
+  text-align: left;
+  border: 1px solid #d8e2d5;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow:
+    0 10px 36px #435b3910,
+    0 0 0 5px #edf1e980;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+.idea-input:focus-within {
+  border-color: #789578;
+  box-shadow:
+    0 10px 36px #435b3910,
+    0 0 0 5px #dfeadd80;
+}
+.composer-heading {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #354d3f;
+  font-size: 14px;
+  font-weight: 600;
+}
+.composer-heading > .anticon {
+  color: #6b8c61;
+  font-size: 17px;
+}
+.composer-label {
+  margin-left: auto;
+  color: #9ba396;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+}
+textarea {
+  display: block;
+  width: 100%;
+  min-height: 101px;
+  padding: 17px 0;
+  resize: vertical;
+  color: #35483b;
+  font-size: 14px;
+  line-height: 1.8;
+  background: transparent;
+  border: 0;
+  outline: 0;
+}
+textarea::placeholder {
+  color: #9ba196;
+}
+.input-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 13px;
+  border-top: 1px solid #eff1eb;
+}
+.generation-options {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  color: #9aa093;
+  font-size: 11px;
+}
+.generation-options label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #747d70;
+  font-size: 12px;
+  cursor: pointer;
+}
+.shortcut kbd {
+  font: inherit;
+}
+.input-actions :deep(.ant-btn-primary) {
+  height: 40px;
+  padding: 0 19px;
+  font-size: 13px;
+  box-shadow: 0 3px 8px #36583d14;
+}
+.examples {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+  color: #92988b;
+  font-size: 11px;
+}
+.examples > span {
+  margin-right: 3px;
+}
+.examples button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 11px;
+  color: #727c6d;
+  background: #ffffff80;
+  border: 1px solid #e4e8de;
+  border-radius: 8px;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+.examples button:hover {
+  color: var(--accent);
+  border-color: #a8bba2;
+  background: #edf3e9;
+}
+.inspiration-card,
+.build-card {
+  position: absolute;
+  z-index: 1;
+  width: 178px;
+  overflow: hidden;
+  border: 1px solid #e1e6dc;
+  border-radius: 12px;
+  background: #fffdf8;
+  box-shadow: 0 14px 35px #3f503c09;
+  pointer-events: none;
+}
+.inspiration-card {
+  top: 153px;
+  left: -2px;
+  transform: rotate(-8deg);
+}
+.mini-browser {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 25px;
+  padding: 0 9px;
+  border-bottom: 1px solid #eeece3;
+}
+.mini-browser > i {
+  width: 4px;
+  height: 4px;
+  background: #d6d7cc;
+  border-radius: 50%;
+}
+.mini-browser > span {
+  margin-left: auto;
+  font-size: 6px;
+  color: #919584;
+}
+.mini-poster {
+  position: relative;
+  height: 190px;
+  padding: 20px 17px;
+  overflow: hidden;
+  background: #f2eedf;
+}
+.mini-poster > span {
+  font-size: 6px;
+  color: #8a8a71;
+  letter-spacing: 0.13em;
+}
+.mini-poster strong {
+  position: relative;
+  z-index: 1;
+  display: block;
+  margin-top: 12px;
+  color: #46553b;
+  font:
+    30px/1.02 Georgia,
+    serif;
+  letter-spacing: -0.06em;
+}
+.mini-poster strong em {
+  font-weight: normal;
+}
+.mini-poster .poster-caption {
+  position: absolute;
+  bottom: 14px;
+  font-size: 7px;
+}
+.leaf-art {
+  position: absolute;
+  right: 12px;
+  bottom: 22px;
+  width: 55px;
+  height: 84px;
+  border-left: 1px solid #6f7953;
+  transform: rotate(25deg);
+}
+.leaf-art i {
+  position: absolute;
+  left: 0;
+  width: 29px;
+  height: 54px;
+  background: #8c9c72;
+  border-radius: 0 100% 0 100%;
+  transform-origin: left bottom;
+}
+.leaf-art i:nth-child(2) {
+  top: 20px;
+  left: -29px;
+  background: #b1bb92;
+  transform: scaleX(-1) rotate(5deg);
+}
+.leaf-art i:nth-child(3) {
+  top: -13px;
+  width: 20px;
+  height: 36px;
+  background: #697e53;
+}
+.mini-caption {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px;
+  color: #8d9586;
+  font-size: 8px;
+}
+.tiny-dot {
+  width: 5px;
+  height: 5px;
+  background: #8fa881;
+  border-radius: 50%;
+}
+.build-card {
+  top: 202px;
+  right: -7px;
+  width: 186px;
+  padding: 13px;
+  transform: rotate(7deg);
+  background: #fff;
+}
+.build-heading {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 9px;
+  color: #67745f;
+}
+.build-heading > i {
+  width: 5px;
+  height: 5px;
+  margin-left: auto;
+  background: #b0c69d;
+  border-radius: 50%;
+}
+.code-lines {
+  display: grid;
+  gap: 7px;
+  padding: 18px 0;
+  font:
+    8px/1.5 Consolas,
+    monospace;
+  color: #969d8c;
+}
+.code-lines b {
+  color: #66876b;
+  font-weight: 400;
+}
+.code-lines em {
+  color: #b29c66;
+  font-style: normal;
+}
+.build-preview {
+  display: flex;
+  gap: 5px;
+  height: 53px;
+  padding: 7px;
+  background: #f7f8f3;
+  border-radius: 5px;
+}
+.build-preview > div {
+  flex: 1;
+  background: #dbe5d2;
+  border-radius: 3px;
+}
+.build-preview > div:nth-child(2) {
+  background: #eee6d2;
+}
+.build-preview > div:nth-child(3) {
+  background: #e1e5d9;
+}
+.build-status {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 13px;
+  color: #7d9471;
+  font-size: 7px;
+}
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 28px 0;
+  border-top: 1px solid #e4e8de;
+  border-bottom: 1px solid #e4e8de;
+}
+.step {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 30px;
+}
+.step + .step {
+  border-left: 1px solid #e4e8de;
+}
+.step:first-child {
+  padding-left: 0;
+}
+.step:last-child {
+  padding-right: 0;
+}
+.step-icon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 43px;
+  height: 43px;
+  background: #edf1e6;
+  border: 1px solid #e5eadc;
+  border-radius: 13px;
+  color: #738660;
+  font-size: 20px;
+}
+.step:nth-child(2) .step-icon {
+  background: #f4efe3;
+  color: #a28c57;
+  border-color: #eee8d9;
+}
+.step:nth-child(3) .step-icon {
+  background: #eaf0ed;
+  color: #698779;
+  border-color: #e0e9e2;
+}
+.step b {
+  color: #475543;
+  font-size: 13px;
+  font-weight: 600;
+}
+.step p {
+  margin: 5px 0 0;
+  color: #7a8472;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.step-number {
+  margin-left: auto;
+  color: #c0c8b8;
+  font:
+    12px Georgia,
+    serif;
+}
+.showcase {
+  padding-top: 50px;
+}
+.showcase .section-heading {
+  margin-bottom: 27px;
+}
+.showcase h2 {
+  margin: 10px 0 8px;
+  font-size: 27px;
+  font-weight: 600;
+  color: #344b3c;
+}
+.heading-dot {
+  color: #91aa7c;
+  margin-left: 3px;
+}
+.showcase .page-description {
+  font-size: 12px;
+}
+.collection-note {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding-bottom: 5px;
+  color: #909888;
+  font-size: 11px;
+}
+.collection-note > span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #9caf8e;
+}
+.app-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 22px;
+}
+.empty-icon {
+  color: #829575;
+  font-size: 28px;
+}
+.empty-state h3 {
+  margin: 16px 0 8px;
+  color: #56684c;
+  font-size: 17px;
+}
+.empty-state p {
+  margin: 0;
+  font-size: 13px;
+}
+@media (max-width: 1200px) {
+  .inspiration-card,
+  .build-card {
+    display: none;
+  }
+}
+@media (max-width: 1000px) {
+  .app-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .step {
+    padding: 0 18px;
+    gap: 11px;
+  }
+  .step-number {
+    display: none;
+  }
+}
+@media (max-width: 680px) {
+  .hero {
+    padding: 40px 0 30px;
+  }
+  .hero-copy h1 {
+    font-size: clamp(32px, 8.7vw, 48px);
+    margin-top: 22px;
+    line-height: 1.4;
+  }
+  .hero-copy > p {
+    font-size: 12px;
+  }
+  .mobile-break {
+    display: block;
+  }
+  .hero-badge {
+    font-size: 10px;
+  }
+  .idea-input {
+    margin-top: 25px;
+    padding: 18px 16px 13px;
+    border-radius: 16px;
+  }
+  .composer-heading {
+    font-size: 13px;
+  }
+  .composer-label {
+    font-size: 9px;
+  }
+  textarea {
+    min-height: 116px;
+    font-size: 13px;
+  }
+  .generation-options > .shortcut {
+    display: none;
+  }
+  .input-actions {
+    gap: 8px;
+  }
+  .input-actions :deep(.ant-btn-primary) {
+    padding: 0 13px;
+  }
+  .examples {
+    gap: 6px;
+    font-size: 10px;
+  }
+  .examples > span {
+    width: 100%;
+    margin: 0 0 3px;
+  }
+  .examples button {
+    padding: 7px 9px;
+  }
+  .steps {
+    grid-template-columns: 1fr;
+    gap: 21px;
+    padding: 25px 12px;
+  }
+  .step,
+  .step:first-child,
+  .step:last-child {
+    padding: 0;
+  }
+  .step + .step {
+    border: 0;
+  }
+  .step-number {
+    display: block;
+  }
+  .step b {
+    font-size: 13px;
+  }
+  .step p {
+    font-size: 11px;
+  }
+  .step-icon {
+    width: 39px;
+    height: 39px;
+    font-size: 18px;
+  }
+  .showcase {
+    padding-top: 34px;
+  }
+  .showcase h2 {
+    font-size: 23px;
+  }
+  .collection-note {
+    display: none;
+  }
+  .app-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+}
 </style>

@@ -23,10 +23,29 @@ const immersive = computed(() => Boolean(route.meta.immersive))
 </template>
 
 <style scoped>
-.basic-layout { min-height: 100vh; background: #f6f6f2; }
-.main-content { flex: 1; width: 100%; }
-.immersive .main-content { display: flex; min-height: 0; }
-.page-enter-active,.page-leave-active { transition: opacity .18s ease, transform .18s ease; }
-.page-enter-from { opacity: 0; transform: translateY(5px); }
-.page-leave-to { opacity: 0; }
+.basic-layout {
+  min-height: 100vh;
+  background: var(--page-bg);
+}
+.main-content {
+  flex: 1;
+  width: 100%;
+}
+.immersive .main-content {
+  display: flex;
+  min-height: 0;
+}
+.page-enter-active,
+.page-leave-active {
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+}
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(5px);
+}
+.page-leave-to {
+  opacity: 0;
+}
 </style>

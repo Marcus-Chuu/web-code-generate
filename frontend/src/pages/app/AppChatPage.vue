@@ -8,6 +8,7 @@ import {
   DownloadOutlined,
   EditOutlined,
   ExpandOutlined,
+  HighlightOutlined,
   ReloadOutlined,
   SendOutlined,
 } from '@ant-design/icons-vue'
@@ -18,6 +19,7 @@ import { appService, chatService, formatWorkflowContent } from '@/api/services'
 import { useLoginUserStore } from '@/stores/loginUser'
 import { codeTypeLabel } from '@/utils/format'
 import { resolvePreviewUrl, withCacheBuster } from '@/utils/preview'
+import { useVisualEditor, describeElement } from '@/composables/useVisualEditor'
 import type { AppVO, ChatHistory } from '@/types/domain'
 
 interface ChatMessage {
@@ -44,9 +46,12 @@ const hasMore = ref(false)
 const oldestTime = ref<string>()
 const messageList = ref<HTMLElement>()
 const previewUrl = ref('')
+const previewFrame = ref<HTMLIFrameElement | null>(null)
 const previewLoading = ref(false)
 const previewError = ref('')
 const mobilePanel = ref<'chat' | 'preview'>('chat')
+const { editing, selectedElement, frameSrc, toggleEdit, exitEdit, clearSelection } = useVisualEditor(previewFrame, previewUrl)
+const selectedSummary = computed(() => (selectedElement.value ? describeElement(selectedElement.value) : ''))
 let stopStream: (() => void) | undefined
 let typeTimer: number | undefined
 let queuedText = ''
@@ -137,9 +142,17 @@ const startTypewriter = () => {
   }, 18)
 }
 const send = async (initialMessage?: string) => {
-  const content = (initialMessage ?? input.value).trim()
+  let content = (initialMessage ?? input.value).trim()
+  // 可视化编辑：将选中的元素信息拼接到提示词
+  if (selectedElement.value) {
+    const hint = `[选中的页面元素] ${describeElement(selectedElement.value)}`
+    content = content ? `${content}\n\n${hint}` : hint
+  }
   if (!content || generating.value || !isOwner.value) return
   input.value = ''
+  // 发送后清除选中并退出编辑模式
+  clearSelection()
+  exitEdit()
   generating.value = true
   serverDone = false
   queuedText = ''
@@ -263,124 +276,154 @@ onBeforeUnmount(() => {
     <div class="studio-loading">
       <a-spin :spinning="loading">
         <div class="studio-body">
-        <section class="chat-panel">
-          <div ref="messageList" class="message-list">
-            <div v-if="hasMore" class="load-more">
-              <a-button
-                type="link"
-                size="small"
-                :loading="loadingHistory"
-                @click="loadHistory(true)"
-                >加载更早记录</a-button
-              >
-            </div>
-            <div v-if="!messages.length && !loading" class="chat-welcome">
-              <span>✦</span>
-              <h2>和 AI 一起完成你的页面</h2>
-              <p>描述布局、颜色、交互或内容，生成结果会实时显示在右侧。</p>
-            </div>
-            <article v-for="item in messages" :key="item.id" class="message-row" :class="item.type">
-              <a-avatar
-                :size="32"
-                :src="
-                  item.type === 'user'
-                    ? userStore.loginUser?.userAvatar || DEFAULT_AVATAR
-                    : undefined
-                "
-                class="avatar"
-                >{{ item.type === 'ai' ? 'AI' : '' }}</a-avatar
-              >
-              <div class="bubble" :class="{ error: item.error }">
-                <MarkdownRenderer
-                  v-if="item.type === 'ai' && item.content"
-                  :content="item.content"
-                /><span v-else>{{ item.content }}</span
-                ><span v-if="item.pending" class="typing-cursor"></span>
+          <section class="chat-panel">
+            <div ref="messageList" class="message-list">
+              <div v-if="hasMore" class="load-more">
+                <a-button
+                  type="link"
+                  size="small"
+                  :loading="loadingHistory"
+                  @click="loadHistory(true)"
+                  >加载更早记录</a-button
+                >
               </div>
-            </article>
-          </div>
-          <div class="composer-wrap">
-            <a-alert
-              v-if="!isOwner && app"
-              type="warning"
-              show-icon
-              message="只有应用创建者可以继续对话"
-            />
-            <div class="composer" :class="{ disabled: !isOwner }">
-              <a-textarea
-                v-model:value="input"
-                :disabled="!isOwner || generating"
-                :bordered="false"
-                :auto-size="{ minRows: 2, maxRows: 6 }"
-                maxlength="1000"
-                placeholder="告诉 AI 下一步怎么改…（Enter 发送，Shift + Enter 换行）"
-                @keydown="keydown"
+              <div v-if="!messages.length && !loading" class="chat-welcome">
+                <span>✦</span>
+                <h2>和 AI 一起完成你的页面</h2>
+                <p>描述布局、颜色、交互或内容，生成结果会实时显示在右侧。</p>
+              </div>
+              <article
+                v-for="item in messages"
+                :key="item.id"
+                class="message-row"
+                :class="item.type"
+              >
+                <a-avatar
+                  :size="32"
+                  :src="
+                    item.type === 'user'
+                      ? userStore.loginUser?.userAvatar || DEFAULT_AVATAR
+                      : undefined
+                  "
+                  class="avatar"
+                  >{{ item.type === 'ai' ? 'AI' : '' }}</a-avatar
+                >
+                <div class="bubble" :class="{ error: item.error }">
+                  <MarkdownRenderer
+                    v-if="item.type === 'ai' && item.content"
+                    :content="item.content"
+                  /><span v-else>{{ item.content }}</span
+                  ><span v-if="item.pending" class="typing-cursor"></span>
+                </div>
+              </article>
+            </div>
+            <div class="composer-wrap">
+              <a-alert
+                v-if="!isOwner && app"
+                type="warning"
+                show-icon
+                message="只有应用创建者可以继续对话"
               />
-              <div class="composer-footer">
-                <div class="composer-options">
-                  <label class="agent-mode" title="使用 LangGraph4j 多步骤规划、生成和质量检查">
-                    <a-switch v-model:checked="agentMode" size="small" :disabled="generating || !isOwner" />
-                    <span>工作流模式</span>
-                  </label>
-                  <span class="input-count">{{ input.length }}/1000</span>
-                </div
-                ><a-button
-                  type="primary"
-                  shape="circle"
-                  :loading="generating"
-                  :disabled="!input.trim() || !isOwner"
-                  @click="send()"
-                  ><SendOutlined
-                /></a-button>
+              <div class="composer" :class="{ disabled: !isOwner }">
+                <a-alert
+                  v-if="editing && selectedElement"
+                  type="warning"
+                  show-icon
+                  closable
+                  message="已选中页面元素"
+                  :description="selectedSummary"
+                  @close="clearSelection"
+                />
+                <a-textarea
+                  v-model:value="input"
+                  :disabled="!isOwner || generating"
+                  :bordered="false"
+                  :auto-size="{ minRows: 2, maxRows: 6 }"
+                  maxlength="1000"
+                  placeholder="告诉 AI 下一步怎么改…（Enter 发送，Shift + Enter 换行）"
+                  @keydown="keydown"
+                />
+                <div class="composer-footer">
+                  <div class="composer-options">
+                    <label class="agent-mode" title="使用 LangGraph4j 多步骤规划、生成和质量检查">
+                      <a-switch
+                        v-model:checked="agentMode"
+                        size="small"
+                        :disabled="generating || !isOwner"
+                      />
+                      <span>工作流模式</span>
+                    </label>
+                    <span class="input-count">{{ input.length }}/1000</span>
+                  </div>
+                  <a-space :size="8">
+                    <a-button
+                      shape="circle"
+                      :type="editing ? 'primary' : 'default'"
+                      :disabled="!isOwner || generating"
+                      :title="editing ? '退出选取模式' : '选取页面元素'"
+                      @click="toggleEdit"
+                      ><HighlightOutlined
+                    /></a-button>
+                    <a-button
+                      type="primary"
+                      shape="circle"
+                      :loading="generating"
+                      :disabled="!input.trim() || !isOwner"
+                      @click="send()"
+                      ><SendOutlined
+                    /></a-button>
+                  </a-space>
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        <section class="preview-panel">
-          <div class="preview-toolbar">
-            <div class="preview-dots"><i></i><i></i><i></i></div>
-            <div class="address">{{ previewUrl || '生成完成后将在这里显示实时页面' }}</div>
-            <a-button type="text" shape="circle" :disabled="!previewUrl" @click="refreshPreview"
-              ><ReloadOutlined /></a-button
-            ><a-button type="text" shape="circle" :disabled="!previewUrl" @click="openPreviewWindow"
-              ><ExpandOutlined
-            /></a-button>
-          </div>
-          <div class="preview-canvas">
-            <iframe
-              v-if="previewUrl"
-              :src="previewUrl"
-              title="生成应用预览"
-              sandbox="allow-scripts allow-forms allow-modals allow-popups allow-same-origin"
-              @load="previewLoading = false"
-            />
-            <div v-else class="preview-empty">
-              <div class="preview-icon">⌘</div>
-              <h2>等待第一版页面</h2>
-              <p>AI 完成生成后会自动刷新预览，确认效果后可点击右上角部署。</p>
-              <a-button
-                v-if="messages.length && !generating"
-                :loading="deploying"
-                @click="deploy"
-                >部署应用</a-button
+          <section class="preview-panel">
+            <div class="preview-toolbar">
+              <div class="preview-dots"><i></i><i></i><i></i></div>
+              <div class="address">{{ previewUrl || '生成完成后将在这里显示实时页面' }}</div>
+              <a-button type="text" shape="circle" :disabled="!previewUrl" @click="refreshPreview"
+                ><ReloadOutlined /></a-button
+              ><a-button
+                type="text"
+                shape="circle"
+                :disabled="!previewUrl"
+                @click="openPreviewWindow"
+                ><ExpandOutlined
+              /></a-button>
+            </div>
+            <div class="preview-canvas">
+              <iframe
+                v-if="previewUrl"
+                ref="previewFrame"
+                :src="frameSrc"
+                title="生成应用预览"
+                sandbox="allow-scripts allow-forms allow-modals allow-popups allow-same-origin"
+                @load="previewLoading = false"
+              />
+              <div v-else class="preview-empty">
+                <div class="preview-icon">⌘</div>
+                <h2>等待第一版页面</h2>
+                <p>AI 完成生成后会自动刷新预览，确认效果后可点击右上角部署。</p>
+                <a-button v-if="messages.length && !generating" :loading="deploying" @click="deploy"
+                  >部署应用</a-button
+                >
+              </div>
+              <div v-if="previewLoading" class="preview-mask">
+                <a-spin /><span>正在载入最新页面…</span>
+              </div>
+              <a-result
+                v-if="previewError"
+                status="error"
+                title="预览暂时不可用"
+                :sub-title="previewError"
+                class="preview-error"
+                ><template #extra
+                  ><a-button @click="refreshPreview">重新加载</a-button></template
+                ></a-result
               >
             </div>
-            <div v-if="previewLoading" class="preview-mask">
-              <a-spin /><span>正在载入最新页面…</span>
-            </div>
-            <a-result
-              v-if="previewError"
-              status="error"
-              title="预览暂时不可用"
-              :sub-title="previewError"
-              class="preview-error"
-              ><template #extra
-                ><a-button @click="refreshPreview">重新加载</a-button></template
-              ></a-result
-            >
-          </div>
-        </section>
+          </section>
         </div>
       </a-spin>
     </div>
@@ -395,7 +438,7 @@ onBeforeUnmount(() => {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: #ecece8;
+  background: #eef2e8;
 }
 .studio-bar {
   height: 64px;
@@ -405,7 +448,7 @@ onBeforeUnmount(() => {
   justify-content: space-between;
   padding: 0 20px;
   background: white;
-  border-bottom: 1px solid #e6e6e3;
+  border-bottom: 1px solid #e2e8dc;
 }
 .title-area {
   display: flex;
@@ -481,7 +524,7 @@ onBeforeUnmount(() => {
   place-items: center;
   color: white;
   font-size: 22px;
-  background: #6558f5;
+  background: #52765b;
   border-radius: 14px;
 }
 .chat-welcome h2 {
@@ -520,8 +563,8 @@ onBeforeUnmount(() => {
 }
 .user .bubble {
   color: white;
-  background: #6558f5;
-  border-color: #6558f5;
+  background: #52765b;
+  border-color: #52765b;
   border-radius: 16px 5px 16px 16px;
 }
 .bubble.error {
@@ -535,7 +578,7 @@ onBeforeUnmount(() => {
   height: 14px;
   margin-left: 3px;
   vertical-align: -2px;
-  background: #6558f5;
+  background: #52765b;
   animation: blink 0.8s infinite;
 }
 .composer-wrap {
@@ -548,12 +591,12 @@ onBeforeUnmount(() => {
 .composer {
   padding: 10px 12px 8px;
   background: white;
-  border: 1px solid #dadadd;
+  border: 1px solid #d9e2d0;
   border-radius: 16px;
   box-shadow: 0 12px 32px rgba(38, 42, 60, 0.1);
 }
 .composer:focus-within {
-  border-color: #8c82ff;
+  border-color: #91ad82;
   box-shadow: 0 12px 35px rgba(101, 88, 245, 0.15);
 }
 .composer.disabled {
@@ -579,7 +622,7 @@ onBeforeUnmount(() => {
   cursor: pointer;
 }
 .agent-mode :deep(.ant-switch-checked) {
-  background: #6558f5;
+  background: #52765b;
 }
 .input-count {
   color: #a0a4ae;
@@ -588,7 +631,7 @@ onBeforeUnmount(() => {
 .preview-panel {
   display: flex;
   flex-direction: column;
-  background: #e9e9e5;
+  background: #edf1e7;
 }
 .preview-toolbar {
   height: 48px;
@@ -659,9 +702,9 @@ onBeforeUnmount(() => {
   width: 64px;
   height: 64px;
   place-items: center;
-  color: #6558f5;
+  color: #52765b;
   font-size: 28px;
-  background: #e8e5ff;
+  background: #e7efe0;
   border-radius: 20px;
 }
 .preview-empty h2 {

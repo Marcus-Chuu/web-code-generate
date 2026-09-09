@@ -226,7 +226,7 @@ curl http://localhost:8123/api/health/
 | `pexels.api-key` | Pexels 图片搜索 | — |
 | `cos.client.*` | 腾讯云 COS 对象存储 | — |
 | `mermaid.cli-path` | Mermaid CLI 可执行文件路径 | `mmdc` |
-| `app.deploy.base-url` | 部署访问基础地址 | `http://localhost/api/static` |
+| `app.deploy.base-url` | 部署访问基础地址（local 默认 `http://localhost:8123/api/static`；prod 默认 `http://对外IP/api/static`，均可由 `APP_DEPLOY_BASE_URL` 覆盖） | 见 profile |
 
 > ⚠️ **安全提醒**：所有密钥请通过环境变量或配置中心注入，切勿将真实密钥提交到 Git 仓库。
 
