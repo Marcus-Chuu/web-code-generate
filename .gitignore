@@ -31,5 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### 环境配置（含密钥，不入库） ###
 /src/main/resources/application-prod.yml
 /src/main/resources/application-local.yml
+
+### 运行时生成产物 ###
+/tmp/

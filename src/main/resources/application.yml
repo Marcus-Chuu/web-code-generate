@@ -101,10 +101,16 @@ cos:
     bucket: your-bucket-name
 
 # 应用访问地址
+# 通用默认值(本地直连); 不同环境由 profile 覆盖:
+#   local -> application-local.yml (http://localhost:8123/api/static)
+#   prod  -> application-prod.yml  (http://对外地址/api/static, Nginx 反代)
+# 均可用环境变量 APP_DEPLOY_BASE_URL 覆盖, 不要以 / 结尾
 app:
   deploy:
-    # 可通过环境变量 APP_DEPLOY_BASE_URL 覆盖，不要以 / 结尾
-    base-url: ${APP_DEPLOY_BASE_URL:http://localhost/api/static}
+    base-url: ${APP_DEPLOY_BASE_URL:http://localhost:8123/api/static}
+  # 日志文件目录(仅 prod 环境写文件, 见 logback-spring.xml), 可用环境变量 APP_LOG_DIR 覆盖
+  log:
+    dir: ${APP_LOG_DIR:/home/logs/web-code-generate}
 
 # springdoc-openapi
 springdoc:
@@ -117,4 +123,14 @@ knife4j:
   enable: true
   setting:
     language: zh_cn
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      show-details: always
+
 
